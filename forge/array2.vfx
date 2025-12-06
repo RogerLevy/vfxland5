@@ -231,7 +231,7 @@ class;
 
 : move-range ( array1 array2 ofs1 ofs2 #slots - )
     {: arr1 arr2 ofs1 ofs2 n :}
-    arr1 -> slot-size @ arr2 -> slot-size @ <> abort" MOVE-RANGE : Array nth sizes mismatch!" 
+    arr1 -> slot-size @ arr2 -> slot-size @ <> abort" MOVE-RANGE : Array item size mismatch!" 
     ofs1 arr1 index>slot` ofs2 arr2 index>slot` arr1 -> slot-size @ n * move ;
 
 %object-array :: store-at ( obj i - )

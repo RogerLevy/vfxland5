@@ -391,8 +391,8 @@ wrap-word */mod
 \ before d>s check-double-to-single
 \ wrap-word d>s
 
-before f>s check-float-to-single
-wrap-word f>s
+\ before f>s check-float-to-single
+\ wrap-word f>s
 
 \ File I/O Words
 before open-file check-filename

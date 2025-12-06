@@ -55,8 +55,6 @@ class;
 : tile ( %tileset n - bmpid )
     swap -> baseid @ + ;
 
-aka tile>bmpid tile
-
 : is-tile? ( n - f )
     id>albmp dup -exit al_is_sub_bitmap ;
 
@@ -80,7 +78,7 @@ global-metas 0 nth constant metas
 
 : load-metas-from ( tileset - ) 
     \ copy tile metas that have been stored in a tileset into the global table
-    { metas-array @` global-metas` 0` me 0 tile>bmpid` #tiles @ move-range } ;
+    { metas-array @` global-metas` 0` me 0 tile` #tiles @ move-range } ;
 
 \ =============================================================================
 \ Backward compatibility
