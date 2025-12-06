@@ -1,5 +1,4 @@
 require %idir%/checks.vfx
-require %idir%/tilemap2.vfx
 require %idir%/actor.vfx
 
 \ =============================================================================
