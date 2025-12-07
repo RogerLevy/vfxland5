@@ -1,0 +1,61 @@
+\ ==============================================================================
+\ Atomic Type Classes
+\ ==============================================================================
+
+fast{
+
+\ Value types - EL returns the value (auto-dereferences)
+1 DATATYPE %byte
+1 DATATYPE %char
+\ 2 DATATYPE %half
+cell DATATYPE %int
+4 DATATYPE %float
+8 DATATYPE %double
+cell DATATYPE %fixed
+
+\ 1 2 * DATATYPE %char2
+\ 2 2 * DATATYPE %half2
+cell 2 * DATATYPE %int2
+4 2 * DATATYPE %float2
+8 2 * DATATYPE %double2
+cell 2 * DATATYPE %fixed2
+
+32 DATATYPE %cstr32
+256 DATATYPE %cstr256
+
+\ Reference types - EL returns the stored address/pointer
+cell DATATYPE %addr
+cell DATATYPE %xt
+cell DATATYPE %cstring
+cell DATATYPE %zstring
+cell DATATYPE %lstring
+
+\ ==============================================================================
+\ Atomic Type Details
+\ ==============================================================================
+
+|| : xts!  { print-xt ! store-xt ! fetch-xt ! } ;
+
+['] c@ ['] c! [: c@ . ;] %byte xts!
+['] c@ ['] c! [: c@ emit ;] %char xts!
+\ ['] w@ ['] w! [: h@ . ;] %half xts!
+['] @ ['] ! ['] ? %int xts!
+['] @ ['] ! ['] p? %fixed xts!
+['] sf@ ['] sf! [: sf@ f. ;] %float xts!
+['] df@ ['] df! [: df@ f. ;] %double xts!
+
+['] 2@ ['] 2! [: 2@ swap . . ;] %int2 xts!
+['] 2@ ['] 2! ['] 2p? %fixed2 xts!
+[: dup sf@ 4 + sf@ ;] [: dup 4 + sf! sf! ;] [: dup sf@ f. 4 + sf@ f. ;] %float2 xts!
+[: dup df@ 8 + df@ ;] [: dup 8 + df! df! ;] [: dup df@ f. 8 + df@ f. ;] %double2 xts!
+
+['] count ['] place [: count type ;] %cstr32 xts!
+['] count ['] place [: count type ;] %cstr256 xts!
+
+['] @ ['] ! [: @ .name ;] %addr xts!
+['] @ ['] ! [: @ .name ;] %xt xts!
+['] @ ['] ! [: @ count type ;] %cstring xts!
+['] @ ['] ! [: @ zcount type ;] %zstring xts!
+['] @ ['] ! [: @ lcount type ;] %lstring xts!
+
+fast}
