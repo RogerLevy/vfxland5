@@ -1,0 +1,250 @@
+\ ==============================================================================
+\ Array3 Datatype Tests
+\ ==============================================================================
+\ Tests fetch, store, and print for each datatype
+
+cr cr
+." =============================================================================" cr
+." Array3 Datatype Tests" cr
+." =============================================================================" cr
+
+\ ==============================================================================
+\ Value Types - Numeric
+\ ==============================================================================
+
+cr ." --- Testing %byte ---" cr
+5 %byte array test-bytes
+
+42 0 test-bytes el!
+65 1 test-bytes el!
+99 2 test-bytes el!
+." Element 0 (should be 42): " 0 test-bytes el@ . cr
+." Element 1 (should be 65): " 1 test-bytes el@ . cr
+." Using EL? - Element 0: " 0 test-bytes el? cr
+." Using EL? - Element 2: " 2 test-bytes el? cr
+
+cr ." --- Testing %char ---" cr
+5 %char array test-chars
+char H 0 test-chars el!
+char i 1 test-chars el!
+char ! 2 test-chars el!
+." Element 0 (should be 'H'): " 0 test-chars el@ emit cr
+." Element 1 (should be 'i'): " 1 test-chars el@ emit cr
+." Using EL? - Element 0: " 0 test-chars el? cr
+." Using EL? - Element 2: " 2 test-chars el? cr
+
+cr ." --- Testing %int ---" cr
+5 %int array test-ints
+12345 0 test-ints el!
+-6789 1 test-ints el!
+999 2 test-ints el!
+." Element 0 (should be 12345): " 0 test-ints el@ . cr
+." Element 1 (should be -6789): " 1 test-ints el@ . cr
+." Using EL? - Element 0: " 0 test-ints el? cr
+." Using EL? - Element 2: " 2 test-ints el? cr
+
+cr ." --- Testing %fixed ---" cr
+5 %fixed array test-fixed
+1.5 0 test-fixed el!
+-2.75 1 test-fixed el!
+3.25 2 test-fixed el!
+." Element 0 (should be 1.5): " 0 test-fixed el@ p>f f. cr
+." Element 1 (should be -2.75): " 1 test-fixed el@ p>f f. cr
+." Using EL? - Element 0: " 0 test-fixed el? cr
+." Using EL? - Element 2: " 2 test-fixed el? cr
+
+cr ." --- Testing %float ---" cr
+5 %float array test-floats
+3.14159e 0 test-floats el!
+-2.71828e 1 test-floats el!
+1.618e 2 test-floats el!
+." Element 0 (should be 3.14159): " 0 test-floats el@ f. cr
+." Element 1 (should be -2.71828): " 1 test-floats el@ f. cr
+." Using EL? - Element 0: " 0 test-floats el? cr
+." Using EL? - Element 2: " 2 test-floats el? cr
+
+cr ." --- Testing %double ---" cr
+5 %double array test-doubles
+1.23456789e 0 test-doubles el!
+-9.87654321e 1 test-doubles el!
+2.718281828e 2 test-doubles el!
+." Element 0 (should be 1.23456789): " 0 test-doubles el@ f. cr
+." Element 1 (should be -9.87654321): " 1 test-doubles el@ f. cr
+." Using EL? - Element 0: " 0 test-doubles el? cr
+." Using EL? - Element 2: " 2 test-doubles el? cr
+
+\ ==============================================================================
+\ Value Types - Pairs (2D vectors)
+\ ==============================================================================
+
+cr ." --- Testing %int2 ---" cr
+5 %int2 array test-int2
+100 200 0 test-int2 el!
+-50 75 1 test-int2 el!
+300 400 2 test-int2 el!
+." Element 0 (should be 100 200): " 0 test-int2 el@ swap . . cr
+." Element 1 (should be -50 75): " 1 test-int2 el@ swap . . cr
+." Using EL? - Element 0: " 0 test-int2 el? cr
+." Using EL? - Element 2: " 2 test-int2 el? cr
+
+cr ." --- Testing %fixed2 ---" cr
+5 %fixed2 array test-fixed2
+1.5 2.5 0 test-fixed2 el!
+-3.0 4.25 1 test-fixed2 el!
+5.5 6.75 2 test-fixed2 el!
+." Element 0 (should be 1.5 2.5): "
+    0 test-fixed2 el@ 2p. cr
+." Element 1 (should be -3.0 4.25): "
+    1 test-fixed2 el@ 2p. cr
+." Using EL? - Element 0: " 0 test-fixed2 el? cr
+." Using EL? - Element 2: " 2 test-fixed2 el? cr
+
+cr ." --- Testing %float2 ---" cr
+5 %float2 array test-float2
+1.1e 2.2e 0 test-float2 el!
+3.3e 4.4e 1 test-float2 el!
+5.5e 6.6e 2 test-float2 el!
+." Element 0 (should be 1.1 2.2): "
+    0 test-float2 el@ fswap f. f. cr
+." Element 1 (should be 3.3 4.4): "
+    1 test-float2 el@ fswap f. f. cr
+." Using EL? - Element 0: " 0 test-float2 el? cr
+." Using EL? - Element 2: " 2 test-float2 el? cr
+
+cr ." --- Testing %double2 ---" cr
+5 %double2 array test-double2
+1.111e 2.222e 0 test-double2 el!
+3.333e 4.444e 1 test-double2 el!
+5.555e 6.666e 2 test-double2 el!
+." Element 0 (should be 1.111 2.222): "
+    0 test-double2 el@ fswap f. f. cr
+." Element 1 (should be 3.333 4.444): "
+    1 test-double2 el@ fswap f. f. cr
+." Using EL? - Element 0: " 0 test-double2 el? cr
+." Using EL? - Element 2: " 2 test-double2 el? cr
+
+\ ==============================================================================
+\ Value Types - Embedded Strings
+\ ==============================================================================
+
+cr ." --- Testing %cstr31 ---" cr
+5 %cstr31 array test-cstr31
+s" Hello" 0 test-cstr31 el!
+s" World!" 1 test-cstr31 el!
+s" Test" 2 test-cstr31 el!
+." Element 0 (should be 'Hello'): " 0 test-cstr31 el@ type cr
+." Element 1 (should be 'World!'): " 1 test-cstr31 el@ type cr
+." Using EL? - Element 0: " 0 test-cstr31 el? cr
+." Using EL? - Element 2: " 2 test-cstr31 el? cr
+
+cr ." --- Testing %cstr255 ---" cr
+5 %cstr255 array test-cstr255
+s" This is a longer test string" 0 test-cstr255 el!
+s" Testing 256-byte strings" 1 test-cstr255 el!
+s" Another long string here" 2 test-cstr255 el!
+." Element 0: " 0 test-cstr255 el@ type cr
+." Element 1: " 1 test-cstr255 el@ type cr
+." Using EL? - Element 0: " 0 test-cstr255 el? cr
+." Using EL? - Element 2: " 2 test-cstr255 el? cr
+
+\ ==============================================================================
+\ Reference Types - Pointers
+\ ==============================================================================
+
+cr ." --- Testing %addr ---" cr
+5 %addr array test-addrs
+create dummy-var1  123 , 
+create dummy-var2  456 , 
+create dummy-var3  789 , 
+dummy-var1 0 test-addrs el!
+dummy-var2 1 test-addrs el!
+dummy-var3 2 test-addrs el!
+." Element 0 (addr of dummy-var1, value 123): " 0 test-addrs el@ .name cr
+." Element 1 (addr of dummy-var2, value 456): " 1 test-addrs el@ .name cr
+." Using EL? - Element 0: " 0 test-addrs el? cr
+." Using EL? - Element 2: " 2 test-addrs el? cr
+
+cr ." --- Testing %xt ---" cr
+5 %xt array test-xts
+['] + 0 test-xts el!
+['] * 1 test-xts el!
+['] - 2 test-xts el!
+." Element 0 (should be 5): " 2 3 0 test-xts el@ execute . cr
+." Element 1 (should be 20): " 4 5 1 test-xts el@ execute . cr
+." Using EL? - Element 0: " 0 test-xts el? cr
+." Using EL? - Element 2: " 2 test-xts el? cr
+
+cr ." --- Testing %cstring (counted string pointers) ---" cr
+5 %cstring array test-cstrings
+create cstr1 ," Test1"
+create cstr2 ," Test2"
+create cstr3 ," Test3"
+cstr1 0 test-cstrings el!
+cstr2 1 test-cstrings el!
+cstr3 2 test-cstrings el!
+." Element 0 (should be 'Test1'): " 0 test-cstrings el@ count type cr
+." Element 1 (should be 'Test2'): " 1 test-cstrings el@ count type cr
+." Using EL? - Element 0: " 0 test-cstrings el? cr
+." Using EL? - Element 2: " 2 test-cstrings el? cr
+
+cr ." --- Testing %zstring (zero-terminated pointers) ---" cr
+5 %zstring array test-zstrings
+z" Zero1" constant zstr1
+z" Zero2" constant zstr2
+z" Zero3" constant zstr3
+zstr1 0 test-zstrings el!
+zstr2 1 test-zstrings el!
+zstr3 2 test-zstrings el!
+." Element 0 (should be 'Zero1'): " 0 test-zstrings el@ zcount type cr
+." Element 1 (should be 'Zero2'): " 1 test-zstrings el@ zcount type cr
+." Using EL? - Element 0: " 0 test-zstrings el? cr
+." Using EL? - Element 2: " 2 test-zstrings el? cr
+
+\ ==============================================================================
+\ Array Construction with array{ ... array}
+\ ==============================================================================
+
+cr ." --- Testing array{ ... array} construction ---" cr
+%int array{ 10 , 20 , 30 , 40 , 50 , array} constant inline-ints
+." Inline array element 0 (should be 10): " 0 inline-ints el@ . cr
+." Inline array element 2 (should be 30): " 2 inline-ints el@ . cr
+." Inline array element 4 (should be 50): " 4 inline-ints el@ . cr
+
+%float array{ 1.1e sf, 2.2e sf, 3.3e sf, array} constant inline-floats
+." Inline float element 0 (should be 1.1): " 0 inline-floats el@ f. cr
+." Inline float element 1 (should be 2.2): " 1 inline-floats el@ f. cr
+." Inline float element 2 (should be 3.3): " 2 inline-floats el@ f. cr
+
+\ ==============================================================================
+\ Testing EL? and .EACH for printing arrays
+\ ==============================================================================
+
+cr ." --- Testing .EACH (print all elements) ---" cr
+
+." Integer array contents: " test-ints .each cr
+
+5 %int array demo-ints
+10 0 demo-ints el!
+20 1 demo-ints el!
+30 2 demo-ints el!
+40 3 demo-ints el!
+50 4 demo-ints el!
+." Demo array (should be 10 20 30 40 50): " demo-ints .each cr
+
+5 %char array demo-chars
+char H 0 demo-chars el!
+char e 1 demo-chars el!
+char l 2 demo-chars el!
+char l 3 demo-chars el!
+char o 4 demo-chars el!
+." Character array (should spell 'Hello'): " demo-chars .each cr
+
+\ ==============================================================================
+\ Summary
+\ ==============================================================================
+
+cr
+." =============================================================================" cr
+." Array3 Datatype Tests Complete" cr
+." =============================================================================" cr
+cr

@@ -256,8 +256,17 @@ continuation: ec> ( - ) ( - )
     cell field on-reopen-xt
     /list field dependents              \ classifier dependents (classes that applied the trait or classes that derived the class)
     cell field #openings
+    cell field is-datatype
 dup constant /classifier-base
-to /static
+dup to /static
+
+\ Datatype stuff
+    cell field fetch-xt
+    cell field store-xt
+    cell field print-xt
+    cell field add-xt
+    cell field mul-xt
+drop
 
 : allocate-classifier-id ( - )
     next-classifier# @ classifier -> id-table set-bit
@@ -324,9 +333,9 @@ create-class %trait {
     then
     drop ;
 
-\ : scaffold ( class addr - )
-\     swap over >cla !   \ Store class pointer
-\     copy-template ;
+: scaffold ( class addr - )
+    swap over >cla !   \ Store class pointer
+    copy-template ;
 
 redef : construct ( ... class addr - )
     swap over >cla !   \ Store class pointer
@@ -558,8 +567,6 @@ create %protocol  %class dmake {
             \ Class rules
             classifier reopened? if
                 \ Reopened class without a field-space - abort
-                \ (Probably won't ever happen because CLASS: redefines
-                \ classes without field-spaces instead of re-opening them)
                 classifier has-field-space? not
                 abort" NPROPERTY : Cannot add properties to an existing class without a field-space."
                 \ Reopened class with a field-space - okay
@@ -679,6 +686,7 @@ create %protocol  %class dmake {
    
 : class: ( <name> - )
     %class already? if
+        preword find drop >body -> is-datatype @ abort" Cannot reopen datatypes."
         preword find drop >body to classifier
         \ Execute on-reopen if set
         classifier -> on-reopen-xt @ ?dup if
@@ -698,6 +706,9 @@ create %protocol  %class dmake {
         /object-base next-ofs !
         %object classifier -1 apply-trait 
     } ;
+
+: datatype ( size <name> - )
+    class: classifier { is-datatype on  field-space } ;
 
 : >template ( class - a )
     {: class0 :}
@@ -754,6 +765,7 @@ create %protocol  %class dmake {
 aka oexec execute
 
 defer protocol-validations ( obj protocol - obj protocol )
+
 
 : does-protocol ( - ) ( ... obj - ... )
     does> protocol-validations swap {

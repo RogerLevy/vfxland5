@@ -9,8 +9,8 @@ aka d! 2!
 : y@ cell+ @ ;
 : x! ! ;
 : y! cell+ ! ;
-: 2@ dup @ swap 4 + @ ;
-: 2! dup >r 4 + ! r> ! ;
+redef : 2@ dup @ swap 4 + @ ;
+redef : 2! dup >r 4 + ! r> ! ;
 : 2+! dup >r 4 + +! r> +! ;
 : 2, swap , , ;
 \ redef : 2+  rot + >r + r> ;

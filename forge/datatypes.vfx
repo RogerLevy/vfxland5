@@ -1,0 +1,101 @@
+\ ==============================================================================
+\ Atomic Type Classes
+\ ==============================================================================
+
+fast{ optimising on
+
+\ Value types - el@ returns the value (auto-dereferences)
+1 DATATYPE %byte
+1 DATATYPE %char
+\ 2 DATATYPE %half
+cell DATATYPE %int
+4 DATATYPE %float
+8 DATATYPE %double
+cell DATATYPE %fixed
+
+\ 1 2 * DATATYPE %char2
+\ 2 2 * DATATYPE %half2
+cell 2 * DATATYPE %int2
+4 2 * DATATYPE %float2
+8 2 * DATATYPE %double2
+cell 2 * DATATYPE %fixed2
+
+32 DATATYPE %cstr31
+256 DATATYPE %cstr255
+
+\ Reference types - el@ returns the stored address/pointer
+cell DATATYPE %addr
+cell DATATYPE %xt
+cell DATATYPE %cstring
+cell DATATYPE %zstring
+cell DATATYPE %lstring
+
+\ ==============================================================================
+\ Atomic Type Access
+\ ==============================================================================
+
+|| : xts!  { print-xt ! store-xt ! fetch-xt ! } ;
+
+['] c@ ['] c! [: c@ . ;] %byte xts!
+['] c@ ['] c! [: c@ emit ;] %char xts!
+\ ['] w@ ['] w! [: h@ . ;] %half xts!
+['] @ ['] ! ['] ? %int xts!
+['] @ ['] ! ['] p? %fixed xts!
+['] sf@ ['] sf! [: sf@ f. ;] %float xts!
+['] df@ ['] df! [: df@ f. ;] %double xts!
+
+['] 2@ ['] 2! [: 2@ swap . . ." ` " ;] %int2 xts!
+['] 2@ ['] 2! [: 2p? ." ` " ;] %fixed2 xts!
+[: dup sf@ 4 + sf@ ;] [: dup 4 + sf! sf! ;] [: dup sf@ f. 4 + sf@ f. ." ` " ;] %float2 xts!
+[: dup df@ 8 + df@ ;] [: dup 8 + df! df! ;] [: dup df@ f. 8 + df@ f. ." ` " ;] %double2 xts!
+
+['] count ['] place [: count type ;] %cstr31 xts!
+['] count ['] place [: count type ;] %cstr255 xts!
+
+['] @ ['] ! [: @ .name ;] %addr xts!
+['] @ ['] ! [: @ .name ;] %xt xts!
+['] @ ['] ! [: @ count type ;] %cstring xts!
+['] @ ['] ! [: @ zcount type ;] %zstring xts!
+['] @ ['] ! [: @ lcount type ;] %lstring xts!
+
+\ ==============================================================================
+\ Atomic Type Math
+\ ==============================================================================
+
+|| redef : xts!  { mul-xt ! add-xt ! } ;
+
+|| : sf+!  dup sf@ f+ sf! ;
+|| : df+!  dup df@ f+ df! ;
+|| : 2sf+!  dup >r 4 + sf+! r> sf+! ;
+|| : 2df+!  dup >r 8 + df+! r> df+! ;
+|| : *!  dup >r @ * r> ! ;
+|| : p*!  dup >r @ p* r> ! ;
+|| : sf*!  dup sf@ f* sf! ;
+|| : df*!  dup df@ f* df! ;
+|| : 2*!  dup >r cell+ *! r> *! ;
+|| : 2p*!  dup >r cell+ p*! r> p*! ;
+|| : 2sf*!  dup >r 4 + sf*! r> sf*! ;
+|| : 2df*!  dup >r 8 + df*! r> df*! ;
+
+['] +! ['] *! %byte xts!
+['] +! ['] *! %char xts!
+['] +! ['] *! %int xts!
+['] +! ['] p*! %fixed xts!
+['] sf+! ['] sf*! %float xts!
+['] df+! ['] df*! %double xts!
+
+['] 2+! ['] 2*! %int2 xts!
+['] 2+! ['] 2p*! %fixed2 xts!
+['] 2sf+! ['] 2sf*! %float2 xts!
+['] 2df+! ['] 2df*! %double2 xts!
+
+['] append ['] stub %cstr31 xts!
+['] append ['] stub %cstr255 xts!
+
+['] +! ['] stub %addr xts!
+['] stub ['] stub %xt xts!
+[: @ append ;] ['] stub %cstring xts!
+[: @ zappend ;] ['] stub %zstring xts!
+[: @ lappend ;] ['] stub %lstring xts!
+
+optimising off fast}
