@@ -20,10 +20,7 @@
 \ Private API (use via borrow):
 \   SLOT     ( index array - addr )        - Raw slot address
 \
-\ Array Types:
-\   %int, %float, %fixed, %addr, %byte, %xt, %cstring - Atomic types
-\   %cell                                             - Untyped (raw) cells
-\   Custom object classes                              - Embedded objects
+\ See datatypes.vfx for the atomic element types.
 \ ==============================================================================
 
 require %idir%/datatypes.vfx
