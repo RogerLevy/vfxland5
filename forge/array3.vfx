@@ -23,6 +23,8 @@
 \ See datatypes.vfx for the atomic element types.
 \ ==============================================================================
 
+fast{ optimising on 
+
 require %idir%/datatypes.vfx
 
 \ ==============================================================================
@@ -263,3 +265,6 @@ redef : array ( #slots class <name> - )
 \   array eacha            ->  (use private SLOT if needed)
 \   cell array{            ->  %int array{ (or whatever cell-size type)
 \   %actor object-array    ->  %actor array
+
+))
+optimising off fast}

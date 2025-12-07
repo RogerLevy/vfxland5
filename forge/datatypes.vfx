@@ -2,7 +2,7 @@
 \ Atomic Type Classes
 \ ==============================================================================
 
-fast{
+fast{ optimising on
 
 \ Value types - EL returns the value (auto-dereferences)
 1 DATATYPE %byte
@@ -58,4 +58,4 @@ cell DATATYPE %lstring
 ['] @ ['] ! [: @ zcount type ;] %zstring xts!
 ['] @ ['] ! [: @ lcount type ;] %lstring xts!
 
-fast}
+optimising off fast}
