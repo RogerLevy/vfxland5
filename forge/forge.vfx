@@ -38,4 +38,4 @@ include %idir%/nib2-compact.vfx   \ Compact class syntax parser (c:)
 include %idir%/oversight.vfx      \ Contract-based validation system
 include %idir%/checks.vfx         \ Core Forth word safety validations
 
-include %idir%/array2.vfx         \ NIBS arrays
+include %idir%/array3.vfx         \ NIBS arrays

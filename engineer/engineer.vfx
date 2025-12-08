@@ -34,31 +34,29 @@ fload %idir%/go.vfx         \ Main Loop
 
 || : fresh,  dup , /classifier move, ;
 
-|| create fresh-classifiers 
-    \ TODO: do this automatically
-    /classifier cell+ array{
-        %object fresh,    
-        %iterable fresh,
-        %lifo fresh,
-        %fifo fresh,
-        %class fresh,
-        %trait fresh,
-        %property fresh,
-        %static fresh,
-        %protocol fresh,
-        %array fresh,
-        %stack fresh,   
-        %object-array fresh,
-        %global fresh,
-    array}
+|| create fresh-classifiers   0
+    1 + %object fresh,    
+    1 + %iterable fresh,
+    1 + %lifo fresh,
+\   1 +  %fifo fresh,
+    1 + %class fresh,
+    1 + %trait fresh,
+    1 + %property fresh,
+    1 + %static fresh,
+    1 + %protocol fresh,
+    1 + %array fresh,
+    1 + %stack fresh,   
+    1 + %global fresh,
+|| constant #freshes
 
-|| : reset-classifier ( a - )
-    @+ ( src dest ) /classifier move ;
+|| : reset+ ( a - a' )
+    @+ udup ( src src dest ) /classifier move 
+    /classifier + ;
 
 || create fresh-all-classifiers classifiers #max-classifiers cells move,
 
 || : reset-system-classifiers ( - )
-    ['] reset-classifier fresh-classifiers eacha 
+    fresh-classifiers #freshes for reset+ loop drop
     fresh-all-classifiers classifiers #max-classifiers cells move ;
 
 \ =============================================================================

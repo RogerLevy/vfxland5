@@ -10,8 +10,8 @@ REQUIRE %idir%/actor.vfx
 1024 ?constant #actors
 1024 ?constant #temps
 
-#actors %actor object-array actors 
-#temps %actor object-array temps
+#actors %actor array actors 
+#temps %actor array temps
 
 variable next#
 
@@ -19,13 +19,15 @@ variable next#
 \ Actor Access Words
 \ =============================================================================
 
-: actor[] ( n - %actor ) actors swap []@ ;
+: actor[] ( n - %actor ) actors el@ ;
 : actor# ( %actor - n ) -> id @ ;
 
 fast{
+public
+borrow array3>> slot
 continuation: actives> ( - ) ( - )
     ( xt ) {: xt :}
-    0 actor[] {
+    0 actors slot {
         #actors for
             en @ if xt execute then
             /actor +to me
@@ -126,7 +128,7 @@ continuation: who> ( - actor|0 ) ( - f )
     clear-stage gamew 2 / gameh 2 / at  ;
 
 : stage-init ( actor - )
-    { me actors slot>index id !   en on   me init-actor } ;
+    { me actors array-index id !   en on   me init-actor } ;
 
 : stage-slot ( - actor )
     #actors for
@@ -147,7 +149,7 @@ continuation: who> ( - actor|0 ) ( - f )
 \ =============================================================================
 
 || variable tnext#
-: temp[] ( n - a ) temps swap []@ ;
+: temp[] ( n - a ) temps el@ ;
 : *temp ( - a )
     #temps for
         tnext# @ temp[] dup free? if

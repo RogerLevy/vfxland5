@@ -19,7 +19,7 @@ class: %tileset
 class;
 
 || : /metas ( - )
-    0 cell %array make metas-array ! ;
+    0 %int %array make metas-array ! ;
 
 0 %tileset :construct ( - )
     /metas ;
@@ -63,22 +63,22 @@ class;
 \ Tile metadata
 \ =============================================================================
 
-#bitmaps cell array global-metas
-global-metas 0 nth constant metas
-: meta ( tile# - n ) 65535 and pile@ + cells metas + @ ;
+#bitmaps %int array global-metas
+: meta ( tile# - n ) 65535 and pile@ + global-metas el@ ;
 : collectible?  meta $20 and 0<> ;
 : destructible?  meta $80 and 0<> ;
 : solid?  meta $0F and $0F = ;
 : instakill?  meta $40 and 0<> ;
 : trap?  meta $10 and 0<> ;
 
+borrow array3>> slot
 : load-metas-for ( fp len tileset - )
     \ load tile metas from a binary file directly into the global table
-    { global-metas baseid @ nth` #tiles @ cells` 2swap read } ; 
+    { baseid @ global-metas slot` #tiles @ cells` 2swap read } ; 
 
 : load-metas-from ( tileset - ) 
     \ copy tile metas that have been stored in a tileset into the global table
-    { metas-array @` global-metas` 0` me 0 tile` #tiles @ move-range } ;
+    { 0 metas-array @ slot`   me 0 tile global-metas slot`   #tiles @ cells` move } ;
 
 \ =============================================================================
 \ Backward compatibility

@@ -1,7 +1,7 @@
 ec-cell pal
 
 create vga13h
-cell array{ 
+%int array{ 
 $000000ff ,
 $0000aaff ,
 $00aa00ff ,
@@ -264,7 +264,7 @@ vga13h pal!
 
 : color ( n - )
     \ Indexed color selection
-    255 and cells pal@ nth @ rgba ;
+    255 and cells pal@ el@ rgba ;
 
 \ VGA Font
 || 0 value vga-8x8      \ allegro font handle

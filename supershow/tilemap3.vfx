@@ -10,6 +10,8 @@ require %idir%/asset.vfx
 require %idir%/bitmap.vfx
 require %idir%/tileset.vfx
 
+public
+
 fast{ 
 
 class: %tilemap
@@ -25,7 +27,7 @@ ec-cell map
 
 global { %tilemap template map! }
 %tilemap template { 
-    create default.ta cell array{ array} ta !
+    create default.ta %int array{ array} ta !
     create default.ts %tileset dmake ts !
 }
 
@@ -43,15 +45,14 @@ global { %tilemap template map! }
 \     before tmh check-map
 \ [then]
 
-
 : xgap ( - n ) map@ >ts @ >tw @ ;
 : ygap ( - n ) map@ >ts @ >th @ ;
 : tmw ( - n ) map@ >w @ ;
 : tmh ( - n ) map@ >h @ ;
 
+borrow array3>> slot
 : spot ( col row tilemap - a )
-    { 0 0`` me dims 1 1 2-`` 2clamp
-    w @ * + ta @ swap nth } ;
+    { 0 0`` me dims 1 1 2-`` 2clamp   w @ * + ta @ slot } ;
 
 : xy>cr ( x. y. - col row )
     xgap ygap 2/ 2>i ;
@@ -86,7 +87,7 @@ global { %tilemap template map! }
     {{ 
         <at
         ts @ >baseid @ pile!
-        ta @ 0 nth` me dims`` drawbg 
+        0 0 me spot` me dims`` drawbg 
     }} ;
 
 fast}
