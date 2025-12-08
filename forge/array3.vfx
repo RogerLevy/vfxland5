@@ -10,7 +10,7 @@
 \ - Performance escape hatch via private SLOT
 \
 \ Public API:
-\   EL       ( index array - value/ref )   - Smart element access
+\   el@       ( index array - value/ref )   - Smart element access
 \   EL!      ( value index array - )       - Store element
 \   !EL      ( index array xt - )          - Fetch-transform-store
 \   EACH     ( array xt - )                - Iterate elements
@@ -38,7 +38,7 @@ trait: %iterable
     prop item-count :int <save
     prop element-type :ref %class         \ Class of elements
 
-    :: el ( i - val ) stub ;
+    :: el@ ( i - val ) stub ;
     :: el? ( i - ) stub ;
     :: el! ( val i - ) stub ;
     :: >!el ( ... index xt - ) stub ;
@@ -67,7 +67,7 @@ trait;
 || : _each ( xt - ) ( ... val - ... )
     {: xt :}
     item-count @ for
-        i me el xt you { execute }
+        i me el@ xt you { execute }
         enough-flag @ if unloop exit then
     loop ;
 
@@ -81,11 +81,11 @@ trait;
 || : _!each ( xt - ) ( ... val - val' ... )
     {: xt :}
     item-count @ for
-        i me el xt you { execute } i me el!
+        i me el@ xt you { execute } i me el!
         enough-flag @ if unloop exit then
     loop ;
 
-%iterable :: !each ( array xt - )
+%iterable :: !each ( xt - )
     enough-flag @ >r
     enough-flag off
     ['] _!each catch
@@ -107,6 +107,9 @@ class: %array
 class;
 
 || : object-array? ( - flag ) element-type @ -> is-datatype @ not ;
+
+: array-index ( a array - n )
+    { data @ - slot-size @ / } ;
 
 \ ==============================================================================
 \ Private Slot Access (performance escape hatch)
@@ -151,7 +154,7 @@ private
 
 public
 
-%array :: el ( index - value/ref )
+%array :: el@ ( index - value/ref )
     _slot _@ ;
 
 %array :: el? ( index  - )
@@ -237,11 +240,11 @@ class;
 
 %stack :: pop ( - val )
     item-count @ 0= abort" Stack underflow!"
-    me tail el  -1 item-count +! ;
+    me tail el@  -1 item-count +! ;
 
 %stack :: peek ( - val )
     item-count @ 0= abort" Stack underflow!"
-    me tail el ;
+    me tail el@ ;
 
 2 %stack :construct ( max-slots element-class - )
     element-type !
@@ -282,7 +285,7 @@ redef : stack ( max-slots element-class <name> - )
     \ Creates NAME and NAME! from body that returns ( index array )
     \ TODO: Parse name
     \ TODO: Compile body twice:
-    \       - Once with EL appended (getter)
+    \       - Once with el@ appended (getter)
     \       - Once with EL! appended (setter)
     stub ;
 

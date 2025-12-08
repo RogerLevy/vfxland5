@@ -4,7 +4,7 @@
 
 fast{ optimising on
 
-\ Value types - EL returns the value (auto-dereferences)
+\ Value types - el@ returns the value (auto-dereferences)
 1 DATATYPE %byte
 1 DATATYPE %char
 \ 2 DATATYPE %half
@@ -23,7 +23,7 @@ cell 2 * DATATYPE %fixed2
 32 DATATYPE %cstr31
 256 DATATYPE %cstr255
 
-\ Reference types - EL returns the stored address/pointer
+\ Reference types - el@ returns the stored address/pointer
 cell DATATYPE %addr
 cell DATATYPE %xt
 cell DATATYPE %cstring
