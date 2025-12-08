@@ -132,7 +132,7 @@ aka j>j get-item
 : jlen ( jarray - n ) _cJSON_GetArraySize@4 ;
 : jcount ( jarray - array-json n ) dup _cJSON_GetArraySize@4 ;
 
-borrow array2>> enough-flag
+borrow array3>> enough-flag
 || : _jeach ( ... jsrc xt - ... ) ( ... jsrc key' - ... )
     swap jcount for 
         2dup 2>r 2 rpick rot execute 

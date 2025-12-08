@@ -38,8 +38,6 @@ aka -m m}
 : $object ( ... class name len - object ) ( - object ) 
     screate dmake ;
 
-redef : []    ( ." [] : WARNING: Deprecated." cr )          index>slot ;
-: deref-index ( ." DEREF-INDEX : WARNING: Deprecated." cr ) index>val ;
 : each@       ( ." EACH@ : WARNING: Deprecated." cr )       each ;
 aka item-size slot-size
 aka max-items max-slots

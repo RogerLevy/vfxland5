@@ -121,7 +121,7 @@ include %idir%\palette.vfx
 root {
     0 0 at object% el: be-ui {
         0 0 at toolbox% el: toolbox {
-            0 16 at object% el {
+            0 16 at object% el@ {
                 0 0 at info% el: info {
                 }
                 0 16 at canvas% el: canvas {

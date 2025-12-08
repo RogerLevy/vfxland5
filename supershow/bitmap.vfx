@@ -14,20 +14,21 @@ class;
 || %bitmap object dummy.bmp
 || : dummies,  #bitmaps for dummy.bmp , loop ;
 
-create bitmaps cell array{ dummies, array} drop
+create bitmaps %addr array{ dummies, array} drop
 
-|| : bitmap[]  $FFFF and bitmaps swap nth ;
+: bitmap@  $FFFF and bitmaps el@ ;
+: bitmap!  $FFFF and bitmaps el! ;
 
 variable next-bmp#  1 next-bmp# !
 
 : alloc-bmp# ( - bmpid ) next-bmp# @   1 next-bmp# +! ;
-: add-bitmap ( bitmap - bmpid ) alloc-bmp# dup >r bitmap[] ! r> ;
+: add-bitmap ( bitmap - bmpid ) alloc-bmp# dup >r bitmap! r> ;
 
 : id>albmp ( bmpid - albmp ) 
-    bitmap[] @ -> albmp @ ;
+    bitmap@ -> albmp @ ;
 
 : id>bmp ( bmpid - bitmap ) 
-    bitmap[] @ ;
+    bitmap@ ;
 
 \ : ?nullbmp  dup 0= abort" BITMAP-FILE : Bitmap is null!" ;
 \ : ?subbmp  dup al_is_sub_bitmlap if al_get_parent_bitmap then ;
