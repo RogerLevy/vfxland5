@@ -45,14 +45,17 @@ trait: %iterable
 
     : !el ( ... index iterable xt - ) swap >!el ;
 
-    \ %iterable :: each ( xt - ) ( val - ) stub ;
-    \ %iterable :: !each ( xt - ) ( val - val' ) stub ;
-    \ %iterable :: .each ( - ) stub ;
+    \ :: each ( xt - ) ( val - ) stub ;
+    \ :: !each ( xt - ) ( val - val' ) stub ;
+    \ :: .items ( - ) stub ;
 
     :: redim ( #items - ) stub ;
 trait;
 
-: #items ( iterable - n ) -> item-count @ ;
+: #items ( iterable - n ) >item-count @ ;
+: empty? ( iterable - bool ) >item-count @ 0= ;
+: tail ( iterable - n iterable ) dup >item-count @ 1 - swap ;
+: head ( iterable - 0 iterable ) 0 swap ;
 
 || variable enough-flag
 : enough  enough-flag on ;
@@ -89,7 +92,7 @@ trait;
     r> enough-flag !
     throw ;
 
-%iterable :: .each ( array - )
+%iterable :: .items ( array - )
     item-count @ for i me el? loop ;
 
 \ ==============================================================================
@@ -104,14 +107,6 @@ class: %array
 class;
 
 || : object-array? ( - flag ) element-type @ -> is-datatype @ not ;
-
-\ Constructor - takes element class / datatype
-2 %array :construct ( #slots class - )
-    element-type !
-    element-type @ sizeof slot-size !
-    max-slots !
-    max-slots @ item-count !
-    align here data !   max-slots @ slot-size @ * allot&erase ;
 
 \ ==============================================================================
 \ Private Slot Access (performance escape hatch)
@@ -139,8 +134,16 @@ private
     element-type @ -> store-xt @ execute ;
 
 : _? ( a - )
-    object-array? if .summary exit then
+    object-array? if .summary cr exit then
     element-type @ -> print-xt @ execute ;
+
+: _+! ( a - )
+    object-array? abort" Adding to object elements is not currently supported!"
+    element-type @ -> add-xt @ execute ;
+
+: _*! ( a - )
+    object-array? abort" Adding to object elements is not currently supported!"
+    element-type @ -> mul-xt @ execute ;
 
 \ ==============================================================================
 \ Public Element Access
@@ -162,6 +165,39 @@ public
     r@ _@ 1 rpick you { execute } r> _! r> drop ;
 
 \ ==============================================================================
+\ Array Construction
+\ ==============================================================================
+
+2 %array :construct ( #slots element-class - )
+    element-type !
+    element-type @ sizeof slot-size !
+    max-slots !
+    max-slots @ item-count !
+    align here data !   max-slots @ slot-size @ * allot&erase 
+    object-array? if 
+        item-count @ for
+            element-type @ i _slot scaffold
+        loop
+    then ;
+
+|| : _array{ ( element-class array-class - )
+    0 -rot make { here data !  you { ;
+
+: array{ ( element-class - )
+    %array _array{ ;
+
+: array} ( - array )
+    } here data @ - slot-size @ /   dup item-count ! max-slots !   me } ;
+
+: pad-array ( count - )
+    \ Pad array to given count
+    me >r }  data @ slot-size @ rot * + here - allot&erase  r> { ;
+
+redef : array ( #slots element-class <name> - )
+    \ Named array allocation
+    %array object ;
+
+\ ==============================================================================
 \ Resize array
 \ ==============================================================================
 
@@ -173,48 +209,71 @@ public
     r>` data @` slot-size @ max-slots @ * r> min` move ;
 
 \ ==============================================================================
-\ Array Construction
-\ ==============================================================================
-((
-
-|| : _array{ ( element-class array-class - array )
-    \ TODO: Create array with element-class
-    \ TODO: Set here to data pointer
-    stub ;
-
-: array{ ( element-class - array )
-    %array _array{ ;
-
-: array} ( array - array )
-    \ TODO: Calculate item-count from here - data @
-    \ TODO: Set max-slots to item-count
-    stub ;
-
-: pad-array ( array count - array )
-    \ Pad array to given count
-    \ TODO: Allot additional space if needed
-    stub ;
-))
-
-redef : array ( #slots class <name> - )
-    \ Named array allocation
-    %array object ;
-
-((
-\ ==============================================================================
-\ Optional Convenience Words
+\ Stack
 \ ==============================================================================
 
-: +el! ( n index array - )
+trait: %lifo 
+    :: push ( item - ) stub ; 
+    :: pop ( - item ) stub ; 
+\    :: push-copy ( a - ) stub ; 
+    :: peek ( - item ) stub ;
+trait;
+
+\ trait: %fifo
+\     :: enqueue ( item - ) stub ;
+\     :: dequeue ( - item ) stub ;
+\ \    :: enqueue-copy ( a - ) stub ;
+\     :: peek ( - item ) stub ;
+\ trait;
+
+class: %stack
+    %array derive
+    is-a %lifo
+class;
+
+%stack :: push ( val - )
+    item-count @ max-slots @ = abort" Stack overflow!"
+    1 item-count +!  me tail el! ;
+
+%stack :: pop ( - val )
+    item-count @ 0= abort" Stack underflow!"
+    me tail el  -1 item-count +! ;
+
+%stack :: peek ( - val )
+    item-count @ 0= abort" Stack underflow!"
+    me tail el ;
+
+2 %stack :construct ( max-slots element-class - )
+    element-type !
+    element-type @ sizeof slot-size !
+    max-slots !
+    align here data !   max-slots @ slot-size @ * allot&erase ;
+
+redef : stack ( max-slots element-class <name> - )
+    \ Named stack allocation; atomic types only 
+    dup -> is-datatype @ abort" Stacks can only contain atomic types! (e.g. %int)"
+    %stack object ;
+
+%stack :: redim ( #slots - )
+    dup max-slots @ = if drop exit then
+    slot-size @ max-slots @ * >r   data @ >r
+    ( #slots ) slot-size @ stack:construct 
+    r> data @   slot-size @ max-slots @ *   r> min   move 
+    item-count @ max-slots @ min item-count ! ;
+
+\ ==============================================================================
+\ Convenience Words
+\ ==============================================================================
+
+: el+! ( val index array - )
     \ Add to element (type-smart)
-    \ TODO: Check element-type
-    \ TODO: Use + for int, f+ for float, p+ for fixed
-    stub ;
+    { _slot _+! } ;
 
-: *el! ( n index array - )
+: el*! ( val index array - )
     \ Multiply element (type-smart)
-    stub ;
+    { _slot _*! } ;
 
+((
 \ ==============================================================================
 \ Array-Getset Macro
 \ ==============================================================================
@@ -231,9 +290,6 @@ redef : array ( #slots class <name> - )
 \ Utility Operations
 \ ==============================================================================
 
-%iterable :: empty? ( - bool )
-    item-count @ 0= ;
-
 %iterable :: find-index ( xt - n | -1 ) ( a - bool )
     \ TODO: Search for element matching predicate
     stub ;
@@ -241,18 +297,6 @@ redef : array ( #slots class <name> - )
 %iterable :: contains? ( item - bool )
     \ TODO: Check if array contains value
     stub ;
-
-
-\ Probably replace these with utility for getting 
-\ the last index of an iterable.
-
-\ %iterable :: head-el ( - ? )
-\     \ TODO: Get first element
-\     stub ;
-
-\ %iterable :: tail-el ( - ? )
-\     \ TODO: Get last element
-\     stub ;
 
 \ ==============================================================================
 \ Migration Notes
@@ -262,9 +306,10 @@ redef : array ( #slots class <name> - )
 \   array swap nth         ->  array el
 \   array swap []@         ->  array el
 \   val array swap []!     ->  val array el!
-\   array eacha            ->  (use private SLOT if needed)
+\   array eacha            ->  use SLOT if needed
 \   cell array{            ->  %int array{ (or whatever cell-size type)
 \   %actor object-array    ->  %actor array
 
 ))
+
 optimising off fast}

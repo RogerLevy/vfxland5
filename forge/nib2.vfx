@@ -256,14 +256,16 @@ continuation: ec> ( - ) ( - )
     cell field on-reopen-xt
     /list field dependents              \ classifier dependents (classes that applied the trait or classes that derived the class)
     cell field #openings
+    cell field is-datatype
 dup constant /classifier-base
 dup to /static
 
 \ Datatype stuff
-    cell field is-datatype
     cell field fetch-xt
     cell field store-xt
     cell field print-xt
+    cell field add-xt
+    cell field mul-xt
 drop
 
 : allocate-classifier-id ( - )
@@ -331,9 +333,9 @@ create-class %trait {
     then
     drop ;
 
-\ : scaffold ( class addr - )
-\     swap over >cla !   \ Store class pointer
-\     copy-template ;
+: scaffold ( class addr - )
+    swap over >cla !   \ Store class pointer
+    copy-template ;
 
 redef : construct ( ... class addr - )
     swap over >cla !   \ Store class pointer
