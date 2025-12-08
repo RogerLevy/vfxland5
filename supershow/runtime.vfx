@@ -56,7 +56,6 @@ REQUIRE %idir%/sprites.vfx
     \ init-samples
     init-autoloads
     init-crt
-    builtin-font fnt!
     debug @ if
 \        ['] supershow-process-dirchange is process-dirchange
     else

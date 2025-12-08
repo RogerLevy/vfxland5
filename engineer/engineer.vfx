@@ -122,6 +122,7 @@ previous
     init-mersenne
     init-allegro
     *display
+    builtin-font fnt! 
     0d to ustime 
 ;
 
