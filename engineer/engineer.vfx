@@ -16,6 +16,7 @@ only forth definitions
 \ =============================================================================
 
 include %idir%/checks.vfx
+include %idir%/trampoline.vfx
 include %idir%/variables.vfx \ System variables
 include %idir%/window.vfx
 
@@ -113,8 +114,9 @@ previous
 : dev-init  empty init-xrefs init-paths ;
 : init-home-path  ?.. wd@ home-path$ place ;
 
+borrow trampoline>> pin
 : frigid ( - )
-    \ Initialize runtime environment
+    \ Initialize runtime environment 
     rs
     hold off
     debug @ if dev-init then
@@ -124,6 +126,7 @@ previous
     *display
     builtin-font fnt! 
     0d to ustime 
+    pin
 ;
 
 redef : main ( - )

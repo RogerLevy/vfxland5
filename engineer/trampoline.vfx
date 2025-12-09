@@ -1,0 +1,11 @@
+private
+
+variable backup
+: used   here firstname  - ;
+: hunk   used cell+ allocate throw ;
+: pin  hunk backup !  firstname used backup @ lplace ;
+
+public
+
+: pristine  rs  backup @ lcount firstname swap move ;
+
