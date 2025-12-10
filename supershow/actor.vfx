@@ -153,6 +153,7 @@ redef : halt  beha off  0 0 vx 2! ;
 : hitbox! ( x y w h - ) w1 2! x1 2! ;
 
 : freemove ( actor - )
+    ?dup -exit
     as> halt -collisions act>
         <left> held? if -2. x +! then
         <right> held? if 2. x +! then
