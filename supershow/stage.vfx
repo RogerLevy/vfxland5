@@ -79,7 +79,7 @@ continuation: who> ( - actor|0 ) ( - f )
 
 || 0 value $
 
-: tagged ( $ - actor|0 )
+: findtag ( $ - actor|0 )
     to $ who> $ count tag$ count s= ;
 
 \ =============================================================================
