@@ -1128,10 +1128,10 @@ aka prop property
         TYPE_INT        of val-addr ? endof 
         TYPE_FIXED      of val-addr p? endof   
         TYPE_FLOAT      of val-addr sf@ f. endof   
-        TYPE_CSTRING    of val-addr count type endof
-        TYPE_ADDR       of val-addr @ .data endof
-        TYPE_XT         of val-addr @ .ip endof
-        TYPE_OBJREF     of val-addr @ .object endof
+        TYPE_CSTRING    of ." ($) " val-addr count type endof
+        TYPE_ADDR       of ." (addr) " val-addr @ .data endof
+        TYPE_XT         of ." (xt) " val-addr @ .ip endof
+        TYPE_OBJREF     of ." (ref) " val-addr @ .object endof
     endcase cr ;
 
 \ unsafe!  just an internal utility
