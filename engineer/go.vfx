@@ -111,7 +111,7 @@ redef : event? ( - f )
     system-controls ;
 
 : process-tick ( - )
-    'show @ ['] draw-game draw-tv ;
+    {{ 0 0 at 'show @ ['] draw-game draw-tv }} ;
 
 : fp ( - )
     \ Frame profile
