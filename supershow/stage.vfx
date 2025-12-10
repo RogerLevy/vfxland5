@@ -78,9 +78,12 @@ continuation: who> ( - actor|0 ) ( - f )
     0 ['] (find) actors each ;
 
 || 0 value $
-
-: findtag ( $ - actor|0 )
+: tagged ( $ - actor|0 )
     to $ who> $ count tag$ count s= ;
+
+|| 0 value z$
+: findtag ( z$ - actor|0 )
+    to z$ who> z$ zcount tag$ count s= ;
 
 \ =============================================================================
 \ Stage processing
