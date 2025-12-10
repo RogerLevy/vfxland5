@@ -15,7 +15,7 @@ variable winy
 
 : restore-window-pos
     s" session.ini" CfgIncluded 
-    display winx @ winy @ 25 max al_set_window_position ;
+    display winx @ winy @ 0 25 2max al_set_window_position ;
 
 ['] save-window-pos AtExit
 
