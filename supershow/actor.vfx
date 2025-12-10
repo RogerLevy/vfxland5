@@ -51,9 +51,8 @@ class;
     >en @ ;
 
 0 %actor :construct ( - )
-    \ ." construct" cr
-    at@ 2>p x 2!
-    ec ecp! ;
+    ec ecp! 
+    at@ 2>p x 2! ;
 
 : init-actor ( actor - )
     { me init } ;
