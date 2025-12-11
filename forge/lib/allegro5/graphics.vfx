@@ -19,7 +19,7 @@ ec-cell ppeny \ fixed
 
 1e 1e 1e 1e frgba
 
-: rgba ( n - )  
+: rgba8 ( n - )  
     c>f 8 << c>f 8 << c>f 8 << c>f drop frgba ;
 
 \ Position

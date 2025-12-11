@@ -264,7 +264,7 @@ vga13h pal!
 
 : color ( n - )
     \ Indexed color selection
-    255 and pal@ el@ rgba ;
+    255 and pal@ el@ rgba8 ;
 
 \ VGA Font
 || 0 value vga-8x8      \ allegro font handle
