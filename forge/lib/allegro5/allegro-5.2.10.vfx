@@ -1266,3 +1266,7 @@ extern "C" void * al_get_default_shader_source( int ALLEGRO_SHADER_PLATFORM-plat
 \ extern "C" void al_get_opengl_texture_size( void * ALLEGRO_BITMAP-*bitmap, void * int-*w, void * int-*h );
 \ "
 
+-warnings
+: al_key_down \ fix bug in 5.2.10.1
+    al_key_down 0<> 1 and ;
++warnings

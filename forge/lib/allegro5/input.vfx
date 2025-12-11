@@ -2,8 +2,6 @@
 \ Polled input
 \ =============================================================================
 
-redef : al_key_down \ fix bug in 5.2.10.1
-    al_key_down 0<> 1 and ;
 : held? ( n - flag )  kbs0 swap al_key_down 0<> ;
 : kdelta ( - n )  dup kbs0 swap al_key_down kbs1 rot al_key_down - ;
 : pressed? ( n - flag )  kdelta 1 = ;
