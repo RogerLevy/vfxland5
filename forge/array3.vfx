@@ -315,4 +315,6 @@ redef : stack ( max-slots element-class <name> - )
 
 ))
 
+aka >el el@
+
 optimising off fast}
