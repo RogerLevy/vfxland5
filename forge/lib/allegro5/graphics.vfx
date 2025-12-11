@@ -4,18 +4,18 @@
 
 \ Color
 
-ec-float penr
-ec-float peng
-ec-float penb
-ec-float pena
-ec-cell penx
-ec-cell peny
+ec-cell penr \ fixed
+ec-cell peng \ fixed
+ec-cell penb \ fixed
+ec-cell pena \ fixed
+ec-cell ppenx \ fixed
+ec-cell ppeny \ fixed
 
 : frgba@ ( - f:r f:g f:b f:a )
-    penr@ peng@ penb@ pena@ ; 
+    penr@ p>f peng@ p>f penb@ p>f pena@ p>f ; 
 
 : frgba ( f:r f:g f:b f:a - )
-    pena! penb! peng! penr! ;
+    f>p pena! f>p penb! f>p peng! f>p penr! ;
 
 1e 1e 1e 1e frgba
 
@@ -23,12 +23,13 @@ ec-cell peny
     c>f 8 << c>f 8 << c>f 8 << c>f drop frgba ;
 
 \ Position
-: at ( x y - ) peny! penx! ;
+: at ( x y - ) >p ppeny! >p ppenx! ;
+: penx@ ( - x ) ppenx@ >i ;
+: peny@ ( - y ) ppeny@ >i ;
 : at@ ( - x y ) penx@ peny@ ;
-: at@f ( - f:x f:y ) at@ 2s>f ;
+: at@f ( - f:x f:y ) ppenx@ p>f ppeny@ p>f ;
 : +at ( x y - ) at@ 2+ at ;
-: <at  $DEADBEEF dup at ;
-\ re-inherit pen position from parent EC
+: <at  you { ppenx@ ppeny@ } ppeny! ppenx! ;  \ hard-inherit pen position
 
 \ =============================================================================
 \ Drawing primitives
