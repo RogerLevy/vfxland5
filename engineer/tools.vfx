@@ -101,7 +101,7 @@ pop-order
     path[ count >abspath prj-path$ place
     prj-path$ count $cwd
     500 ms
-    restore-window-pos
+    restore-window-pos >vfx
     cartridge
 ;
 
