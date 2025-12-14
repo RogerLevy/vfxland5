@@ -46,17 +46,4 @@
         0e 0e z s>f fdup 0e transform
     then ; 
 
-: draw-tv ( xt - ) 
-    zoom @ >r ?border ?execute r> zoom ! ;
-
-|| : ?game-throw ( n - ) 
-    dup -1 = if drop exit then
-    dup if going off >vfx then throw ;
-
-: draw-game ( xt - ) 
-    at@ 2>r
-    cls
-    repl @ if save-kb erase-kb then 
-    catch ?game-throw
-    repl @ if restore-kb then  
-    2r> at ;
+: draw-tv ( xt - ) ?border ?execute ;

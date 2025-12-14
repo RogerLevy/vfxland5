@@ -66,12 +66,12 @@ pop-order
     cartridge
     ; \ repl on ;
 
-: ?reload ( - )
-    honing @ 0<> reload-shift? not and if
-        ld-again
-    else
-        rld
-    then ;
+\ : ?reload ( - )
+\     honing @ 0<> reload-shift? not and if
+\         ld-again
+\     else
+\         rld
+\     then ;
 
 : watch ( - <code> )
     context @ watch-context !
@@ -111,3 +111,5 @@ pop-order
     200 ms
     ldp
 ;
+
+: fp  ['] process-tick time? ;

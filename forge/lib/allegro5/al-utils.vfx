@@ -70,7 +70,11 @@ public
     frame-queue` frame-timer al_get_timer_event_source` al_register_event_source
 ;
 
+extern BOOL SetThreadPriority( hthread, priority );
+
 : init-allegro  ( -- )    
+    GetCurrentThread 2 SetThreadPriority drop
+
     ALLEGRO_VERSION 0 al_install_system check
     
     al_init_image_addon check

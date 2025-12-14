@@ -20,9 +20,8 @@ redef : ticks  ( n - ms )
 \ =============================================================================
 \ Main Loop Support
 \ =============================================================================
-    
-continuation: show> ( - ) ( - )
-    ( xt ) 'show ! ; 
+
+private
 
 : poll ( - )
     poll-keyboard  
@@ -36,18 +35,18 @@ continuation: show> ( - ) ( - )
     winmode  
     update-delta update-delta ;
 
-|| : ?idle ( - ) 
-    debug @ if (EmptyIdle) then ;
+: ?idle  debug @ if (EmptyIdle) then ;
 
-: present ( - )
-    ?idle display al_flip_display spin ;
+public
 
+: present  ?idle display al_flip_display spin ;
 
 \ =============================================================================
-\ Global Events
+\ Event handler
 \ =============================================================================
 
-|| : global-events ( - )
+private
+: system-events ( - )
     ALLEGRO_EVENT_DISPLAY_CLOSE happened? if
         bye
     then
@@ -58,26 +57,15 @@ continuation: show> ( - ) ( - )
         display al_acknowledge_resize
     then ;
 
-\ =============================================================================
-\ Global Event Handler
-\ =============================================================================
-
 || : ?event ( - flag )
     alqueue the-event al_get_next_event 0<> dup -exit
-    >r 
-    global-events 
-    \ ide-events 
-    r> ;
-    
-|| : (pump) ( - )
-    need-pump @ -exit
-    begin ?event not until ;
+    >r system-events r> ;
 
 : pump ( - )
-    ['] (pump) catch ( hist{ ) .throw ( hist} )
-    need-pump on ;
+    [: need-pump @ -exit  begin ?event not until ;] catch  
+    need-pump on  .throw ;
 
-redef : event? ( - f )
+redef : event? ( - flag )
     repl @ if 0 exit then
     need-pump off ?event ;
 
@@ -85,45 +73,22 @@ redef : event? ( - f )
 \ Main Loop
 \ =============================================================================
 
-\ errdef err_quit "User quit"
-|| : ?quit
-    <esc> pressed? shift? not and esc-quits @ and if
-        -1  throw
-    then ;
+public
 
-|| : ?reload-shift ( - ) shift? to reload-shift? ;
+: ?quit  esc-quits @ -exit  <esc> pressed? shift? not and throw ;
+: ?w/f  <enter> pressed?  alt? and if w/f -keys then ;
+: ?bye  <f4> pressed?  alt? and if bye then ;
+: system-controls  ?quit ?w/f ?bye ;
 
-|| : ?w/f ( - )
-    \ debug @ if ide-?w/f exit then
-    <enter> pressed?  alt? and if
-        w/f -keys
-    then ;
+public
 
-|| : ?bye  <f4> pressed?  alt? and if bye then ;
-
-|| : system-controls ( - ) 
-    ?quit ?w/f ?bye ;
-
-\ || : screen ( - ) debug @ if draw-ide else ['] draw-game draw-tv then ;
-
-: process-input ( - )
-    poll ?reload-shift pump 
-    system-controls ;
-
-: process-tick ( - )
-    {{ 0 0 at 'show @ ['] draw-game draw-tv }} ;
-
-: fp ( - )
-    \ Frame profile
-    ['] process-tick time? ;
-
-: frame ( - ) 
-    update-delta
-    process-input
-    process-tick 
-    present ;
+: process-input  poll pump system-controls ;
+: draw-game  cls 0 0 at 'show @ execute ;
+: process-tick  {{ ['] draw-game draw-tv }} ;
+: frame  update-delta process-input process-tick present ;
 
 || : pre ( - )
+    >display 
     0 #tib ! postpone \\ 
     update-delta update-delta 
     need-pump on 
@@ -136,13 +101,9 @@ redef : event? ( - f )
     fullscreen? if windowed winmode then
     >vfx ;
 
-extern BOOL SetThreadPriority( hthread, priority );
+: go ( - ) 
+    going @ ?exit pre 
+    begin ['] frame catch ?dup until 
+    post throw ;
 
-: go ( - )
-    \ Main engine loop - enter IDE if debug mode, otherwise run normally
-    GetCurrentThread 2 SetThreadPriority drop
-    going @ ?exit
-    \ debug @ if >ide else >display then
-    >display
-    pre begin ['] frame catch ?dup until post throw ;
-
+continuation: show> ( - ) ( - ) 'show ! ; 
