@@ -93,7 +93,8 @@ public
     update-delta update-delta 
     need-pump on 
     going on 
-    frame-timer al_resume_timer ;
+    frame-timer al_resume_timer 
+    spin ;
 
 || : post ( - )
     frame-timer al_stop_timer 
