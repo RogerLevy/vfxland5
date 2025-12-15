@@ -221,6 +221,7 @@ trait: %lifo
     :: pop ( - item ) stub ; 
 \    :: push-copy ( a - ) stub ; 
     :: peek ( - item ) stub ;
+    :: vacate ( - ) stub ;
 trait;
 
 \ trait: %fifo
@@ -246,6 +247,9 @@ class;
 %stack :: peek ( - val )
     item-count @ 0= abort" Stack underflow!"
     me tail el@ ;
+
+%stack :: vacate ( - )
+    0 item-count ! ;
 
 2 %stack :construct ( max-slots element-class - )
     element-type !
