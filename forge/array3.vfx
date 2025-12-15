@@ -176,7 +176,8 @@ public
     element-type @ sizeof slot-size !
     max-slots !
     max-slots @ item-count !
-    align here data !   max-slots @ slot-size @ * allot&erase 
+    slot-size @ 128 >= if pagealign else align then here data !   
+    max-slots @ slot-size @ * allot&erase 
     object-array? if 
         item-count @ for
             element-type @ i _slot scaffold
