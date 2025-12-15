@@ -18,7 +18,7 @@ class;
 
 : ?pillory ( - )
     me benched? if
-        $ff5555ff s" !" print
+        $ff5555ff rgba8 s" !" print
     then ;
 
 : backsprites ( - )
