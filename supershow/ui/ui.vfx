@@ -10,7 +10,7 @@ public
 \ Object extension
 class: %element
     %actor derive
-    is-a %node
+    is-a %dltree
     prop sx :fixed
     prop sy :fixed
     prop en prop vis 

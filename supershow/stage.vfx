@@ -6,34 +6,30 @@ REQUIRE %idir%/checks.vfx
 REQUIRE %idir%/utilities.vfx
 REQUIRE %idir%/traits.vfx
 REQUIRE %idir%/actor.vfx
+REQUIRE %idir%/node.vfx
 
-1024 ?constant #actors
-1024 ?constant #temps
+public
 
-#actors %actor array actors 
-#temps %actor array temps
+ec-cell stg
+\ ec-cell nextpri
 
-variable next#
+class: %stage
+    %node derive
+class;
 
 \ =============================================================================
 \ Actor Access Words
 \ =============================================================================
 
-: actor[] ( n - %actor ) actors el@ ;
-: actor# ( %actor - n ) -> id @ ;
-
-fast{
 public
-borrow array3>> slot
+
+: actor[] ( n - %actor ) stg@ el@ ;
+
+|| 0 value xt
 continuation: actives> ( - ) ( - )
-    ( xt ) {: xt :}
-    0 actors slot {
-        #actors for
-            en @ if xt execute then
-            /actor +to me
-        loop
-    } ; 
-fast}
+    xt >r to xt
+    [: { en @ if xt execute then } ;] stg@ each
+    r> to xt ;
 
 \ =============================================================================
 \ Actor Errors
@@ -75,7 +71,7 @@ class;
 
 continuation: who> ( - actor|0 ) ( - f )
     ( xt ) to xt
-    0 ['] (find) actors each ;
+    0 ['] (find) stg@ each ;
 
 || 0 value $
 : tagged ( $ - actor|0 )
@@ -89,8 +85,8 @@ continuation: who> ( - actor|0 ) ( - f )
 \ Stage processing
 \ =============================================================================
 
-: priority ( n - )
-    0 #actors 1 - clamp next# ! ;
+\ : priority ( n - )
+\     nextpri! ;
 
 || : (behave)  actives> ?benched sp@ >r behave r> restore-sp ;
 || : (move)  actives> ?benched physics ;
@@ -104,7 +100,7 @@ continuation: who> ( - actor|0 ) ( - f )
     unloaded on ; 
 
 : sweep ( - )
-    actives> unloaded @ -exit en off ;
+    actives>  unloaded @ -exit  me recycle ;
 
 : step ( - )
     hold @ ?exit
@@ -120,61 +116,24 @@ continuation: who> ( - actor|0 ) ( - f )
 \ Stage management
 \ =============================================================================
 
-: _clear-stage ( - )
-    0 next# !  actives>  me unload ;
-
 : clear-stage ( - )
-    _clear-stage sweep ;
+    ['] unload stg@ each sweep ;
 
 : just ( - )
     ." JUST : Clearing all actors!" cr
     clear-stage gamew 2 / gameh 2 / at  ;
 
 : stage-init ( actor - )
-    { me actors array-index id !   en on   me init-actor } ;
-
-: stage-slot ( - actor )
-    #actors for
-        next# @ actor[] dup free? if
-            unloop exit
-        then  drop
-        next# @ 1 + #actors mod next# !
-    loop  -1 abort" one : Out of actors." ;
+    stg@ swap { stg!   me stg@ push   -1 rnd id !   en on   me init-actor } ;
 
 : one ( class - actor )
-    >r stage-slot r> over construct dup stage-init ;
+    >r frees pop r> over construct dup stage-init ;
     
-: *actor ( - %actor )
-    %actor one ;
+: stage ( <name> - ) ( - )
+    %stage object does> stg! ;
 
-\ =============================================================================
-\ Secondary actor storage
-\ =============================================================================
-
-|| variable tnext#
-: temp[] ( n - a ) temps el@ ;
-: *temp ( - a )
-    #temps for
-        tnext# @ temp[] dup free? if
-            unloop exit
-        then
-        drop
-        tnext# @ 1 + #temps mod tnext# !
-    loop  -1 abort" Out of temps" ;
-
-fast{
-continuation: temps> ( - ) ( - )
-    ( xt )  {: xt :}
-    0 temp[] {
-        #temps for
-            en @ if xt execute then
-            /actor +to me
-        loop
-    } ; 
-fast} 
-
-: clear-temps ( - )
-    temps> me unload ;
+\ Default stage
+stage actors  actors
 
 \ =============================================================================
 \ Script Classes
@@ -220,11 +179,8 @@ fast}
 \ Tools
 \ =============================================================================
 
-: .actors ( - )
-    actives> me .summary cr ;
-
-: .temps ( - )
-    temps> me .summary cr ;
+: .stage ( - )
+    [: .summary cr ;] stg@ each ;
 
 || cstring update-name$
 : update ( - [<class>] )

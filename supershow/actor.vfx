@@ -1,17 +1,17 @@
 REQUIRE %idir%/checks.vfx
 REQUIRE %idir%/utilities.vfx
 REQUIRE %idir%/traits.vfx
+REQUIRE %idir%/node.vfx
 
 variable clock  clock on
 variable gamelife
 0d 2value gametime
 
-512 ?constant /actor
-
 class: %actor
+    %node derive
+
     is-a %drawable
     is-a %unloadable
-    /actor field-space
 
     prop en
     prop x :fixed <save
@@ -25,7 +25,6 @@ class: %actor
     prop beha :xt
     prop phys :xt
     prop time :fixed                \ secs
-    prop n1 prop n2 prop n3 prop n4 \ General purpose props (legacy)
     prop prio :int <save            \ 0 = behind BG, <>0 = in front of BG   
     prop id :int <save
 
@@ -43,7 +42,11 @@ class;
 \ Actor management
 \ =============================================================================
 
-: free? ( actor - flag ) >en @ 0= ;
+\ : actor# ( %actor - n ) 
+\     -> id @ ;
+
+: free? ( actor - flag ) 
+    >en @ 0= ;
 
 : exists? ( actor - flag )
     dup 0= if drop 0 exit then
@@ -51,7 +54,7 @@ class;
     >en @ ;
 
 0 %actor :construct ( - )
-    ec ecp! 
+    node:construct 
     at@ 2>p x 2! ;
 
 : init-actor ( actor - )
@@ -83,15 +86,11 @@ c: %actor benched ;  \ controls behavior and physics
 \ Actor scripting
 \ =============================================================================
 
-continuation: act> ( - ) ( - ) 0 time !  ( xt ) beha ! ; 
-\ continuation: act&> ( - ) ( - ) 0 time !  ( xt ) dup execute  beha ! ; 
+continuation: act> ( - ) ( - ) 0 time !  beha ! ; 
 continuation: physics> ( - ) ( - ) ( xt ) phys ! ;
 
-: simple-motion
-    vx 2@ x 2+! ;
-
-: -collisions ( - )
-    physics> simple-motion ;
+: simple-motion ( - )
+    physics> vx 2@ x 2+!  ;
 
 \ =============================================================================
 \ Template
@@ -100,7 +99,7 @@ continuation: physics> ( - ) ( - ) ( xt ) phys ! ;
 %actor template {
     prio on
     -5 -5 x1 2!  10 10 w1 2!
-    -collisions
+    simple-motion
 }
 
 \ =============================================================================
@@ -134,7 +133,7 @@ redef : halt  beha off  0 0 vx 2! ;
 
 : morph ( class - )
     >r x 2@ vx 2@
-    default me /actor move
+    default me s/node move
     r> cla !
     vx 2! x 2! init ;
 
@@ -153,7 +152,7 @@ redef : halt  beha off  0 0 vx 2! ;
 
 : freemove ( actor - )
     ?dup -exit
-    as> halt -collisions act>
+    as> halt simple-motion act>
         <left> held? if -2. x +! then
         <right> held? if 2. x +! then
         <up> held? if -2. y +! then
@@ -169,8 +168,9 @@ redef : halt  beha off  0 0 vx 2! ;
 
 %actor :: .summary ( %actor - )
     11 push-foreground ." [ "
-    id @ dup 0 >= if ." #" . else drop me .name then
-    cla @ .name
+    \ id @ dup 0 >= if ." #" . else drop me .name then
+    me .data
+    cla @ .data
     .status
     ." at: " x 2@ 2>i swap . . 
     ." ] " pop-attribute ;
@@ -182,4 +182,5 @@ redef : halt  beha off  0 0 vx 2! ;
 aka @hitbox hitbox
 aka actor %actor
 aka act&> act>
+aka -collisions simple-motion
 aka floating -collisions

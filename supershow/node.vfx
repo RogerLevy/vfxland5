@@ -1,0 +1,22 @@
+REQUIRE %vfxland5%/forge/lib/dltree.vfx
+
+512 ?constant s/node
+1024 ?constant MAX_NODES
+
+class: %node
+    s/node field-space
+    is-a %dltree
+    EC_MAX_SIZE nprop ec  template { ec clear-ec }
+class;
+
+0 %node :construct ( - )
+    ec ecp! ;
+
+\ Node pool
+
+MAX_NODES %node array nodes
+MAX_NODES %addr stack frees
+[: frees push ;] nodes each
+
+: recycle ( node - )
+    dup remove  frees push ;
