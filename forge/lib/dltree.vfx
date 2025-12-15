@@ -1,4 +1,9 @@
-trait: %node
+public
+
+trait: %dltree
+    is-a %iterable
+    prop item-count :int <save
+
     prop parent   :addr 
     prop lowest   :addr 
     prop highest  :addr  
@@ -6,15 +11,16 @@ trait: %node
     prop prev     :addr   
 trait;
 
-: dlremove  ( node -- )
+: dlremove ( dltree -- )
     dup -> parent @ dup 0= if  2drop  exit  then
     locals| p n |
     0 n -> parent !
+    -1 p >item-count +! 
     p -> lowest @ p -> highest @ = if
         n p -> lowest @ = if
             0 dup p -> lowest ! p -> highest !
         exit then
-        -1 abort" dlremove: Corrupt tree!"
+        -1 abort" DLREMOVE : Corrupt dltree!"
     else
         n p -> lowest @ = if
             0 n -> next @ -> prev !
@@ -31,14 +37,15 @@ trait;
         0 dup n -> prev ! n -> next !
     then ;
 
-: (dlinit)  ( node parent -- )
+: (dlinit)  ( dltree parent -- )
     locals| p n |
     n dup p -> lowest ! p -> highest !
     p n -> parent ! ;
 
-: dlpush  ( node parent -- )
-    2dup = abort" dlinsert: Same node!" 
+: dlpush  ( dltree parent -- )
+    2dup = abort" DLPUSH : Attempt to add dltree to itself." 
     over dlremove
+    1 over >item-count +! 
     dup -> lowest @ 0= if  (dlinit)  exit  then
     locals| p n |
     n p -> highest @ -> next !
@@ -46,21 +53,10 @@ trait;
     n p -> highest !
     p n -> parent ! ;
 
-: dlinsert-after  ( node dest -- )
-    2dup = abort" dlinsert: Same node!"
-    dup -> parent @ 0= if 2drop exit then
-    over dlremove 
-    dup -> next @ 0= if  -> parent @ dlpush exit  then
-    dup -> next @ locals| neighbor dest src |
-    src dest -> next !
-    dest src -> prev !
-    neighbor src -> next !
-    src neighbor -> prev !
-    dest -> parent @ src -> parent ! ;
-
-: dlunshift  ( node parent -- )
-    2dup = abort" dlinsert: Same node!" 
+: dlunshift  ( dltree parent -- )
+    2dup = abort" DLUNSHIFT : Attempt to add dltree to itself." 
     over dlremove
+    1 over >item-count +! 
     dup -> lowest @ 0= if  (dlinit)  exit  then
     locals| p n |
     p -> lowest @ n -> next !
@@ -68,19 +64,48 @@ trait;
     n p -> lowest !
     p n -> parent ! ;
 
-: dleach  ( xt node -- )
-    -> lowest @ ?dup if
-        {
-            begin  me while
-                next @ >r  dup >r ?execute r>  r> to me
-            repeat
-            drop
-        }
-    else ( xt ) drop then ;
+: dlinsert-over  ( dltree dest -- )
+    2dup = if 2drop exit then
+    dup -> parent @ 0= abort" DLINSERT-OVER : Target dltree has no parent."
+    over dlremove 
+    dup -> next @ 0= if  -> parent @ dlpush exit  then
+    1 over >parent @ >item-count +! 
+    dup -> next @ locals| neighbor dest src |
+    src dest -> next !
+    dest src -> prev !
+    neighbor src -> next !
+    src neighbor -> prev !
+    dest -> parent @ src -> parent ! ;
+
+: dlinsert-under  ( dltree dest -- )
+    2dup = if 2drop exit then
+    dup -> parent @ 0= abort" DLINSERT-UNDER : Target dltree has no parent."
+    dup >prev @ ?dup if
+        nip dlinsert-over
+    else
+        >parent @ dlunshift
+    then ;
+
+fast{
+borrow array3>> enough-flag
+: _dleach ( xt dltree - ) ( ... dltree - ... )
+    >lowest @ dup if
+        begin dup enough-flag @ not and while
+            dup >next @ >r  swap dup >r execute  r> r> 
+        repeat
+        2drop
+    else ( xt 0 ) 2drop then ;
+
+: dleach  ( xt dltree -- ) ( dltree - )
+    over 0= if 2drop exit then
+    enough-flag @ >r enough-flag off
+    ['] _dleach catch
+    r> enough-flag !
+    throw ;
 
 : (dlorphan)  0 dup next ! dup prev ! parent ! ;
 
-: dlclear  ( node -- )
+: dlclear  ( dltree -- )
     -> lowest @ ?dup if
         {
             begin  me while
@@ -88,18 +113,40 @@ trait;
             repeat
         }
         0 dup lowest ! highest !
+        0 item-count !
     then ;
 
-: #children ( obj - n )
-    -> lowest @ dup if 0 swap begin 1 u+ -> next @ ?dup 0= until then ;
+borrow array3>> _?bounds
 
-: nth-child ( n obj - obj )
-    dup #children >r -> lowest @ swap 0 r> umod for -> next @ loop ;
+private
 
-: descendant? ( obj obj - f )
+: _nth-child ( n - dltree )
+    _?bounds
+    dup item-count @ 1 - = if drop highest @ exit then
+    lowest @ 
+    swap 0 max for -> next @ loop ;
+
+public
+
+: descendant? ( dltree1 dltree2 - flag )
     swap {
         begin parent @ dup while
             over = if   } drop -1   exit then
             parent @ to me
         repeat nip ( 0 )
     } ;
+fast}
+
+
+%dltree :: el@ ( i - val ) _nth-child ;
+%dltree :: el? ( i - val ) _nth-child .summary ;
+
+%dltree :: push ( item - ) me dlpush ; 
+%dltree :: pop ( - item ) highest @ dup 0= abort" DLTREE::POP : Underflow." dup dlremove ; 
+%dltree :: unshift ( item - ) me dlunshift ; 
+%dltree :: shift ( - item ) lowest @ dup 0= abort" DLTREE::SHIFT : Underflow." dup dlremove ; 
+%dltree :: vacate ( - ) me dlclear ;
+
+%dltree :: each ( xt - ) me dleach ;
+
+aka remove dlremove
