@@ -19,7 +19,7 @@ aka cd cwd
 : @+  ( a - a' n ) dup cell+ swap @ ;
 : c@+ ( a - a' n )  dup 1 + swap c@ ;
 : lc  ( n - n ) dup 'A' 'Z' within? if $20 or then ;
-: ltype  ( a n - ) for c@+ lc emit loop drop ;      
+: lctype  ( a n - ) for c@+ lc emit loop drop ;      
 : pagealign ( - )  here $ff and 256 swap - allot ;
 : aligned-page ( - <name> )  pagealign here $100 allot&erase constant ;
 : ?execute ( xt - ) ?dup -exit >r ;
@@ -28,6 +28,10 @@ aka cd cwd
 aka << lshift
 aka >> rshift
 : c>f  dup 24 >> s>f 255e f/ ;
+: (dword)  base @ >r hex  0 <# #s 'x' hold '0' hold #> r> base ! ;
+: h. ( n - ) (dword) type ;
+: (word)  base @ >r decimal  0 <# #s #> r> base ! ;
+: #. ( n - ) (word) type ;
 
 : screate ( name len - ) ( - a )
     {: | name$[ 256 ] :} name$[ place name$[ $create ;
@@ -35,46 +39,52 @@ aka >> rshift
 include %idir%/../textmode/textmode-tools.vfx
 
 : IP>NFA        \ addr -- nfa
-\ *G Attempt to move backwards from an address within a definition to
-\ ** the relevant NFA.
-  13 -			\ NFA (count byte) is at least this far back
-  1024 for
-    dup InForth? 0= if drop  C" <???> "  unloop exit then
-    dup name? if unloop exit then
-    1-
-  loop 
-  drop  C" <???> " ;
+    \ Attempt to move backwards from an address within a definition to
+    \ the relevant NFA.  If not found, return temporary string containing
+    \ the given address in hex.
+    {: | fb[ 256 ] :}
+    dup (dword) fb[ place
+    \ 13 -			\ NFA (count byte) is at least this far back
+    1024 for
+        dup InForth? 0= if drop  fb[  unloop exit then
+        dup name? if unloop exit then
+        1-
+    loop 
+    drop  fb[ ; 
+
+: A>NFA        \ addr -- nfa
+    \ Attempt to move backwards from an address within a definition to
+    \ the relevant NFA.  If not found, return temporary string containing
+    \ the given address in hex.
+    {: | fb[ 257 ] :}
+    dup (dword) fb[ place  0 fb[ count + c!
+    unalign 
+    13 -			\ NFA (count byte) is at least this far back
+    1024 for
+        dup InForth? 0= if drop  fb[  unloop exit then
+        dup name? if unloop exit then
+        1-
+    loop 
+    drop  fb[ ; 
 
 : >name ( xt -- nfa|xt )
-\ *G Move a pointer from an XT back to the NFA or name-pointer.
-\ ** If the original pointer was not an XT or if the definition in
-\ ** question has no name header in the dictionary the returned pointer
-\ ** will be useless. Care should be taken when manipulating or scanning
-\ ** the Forth dictionary in this way. If *\i{xt} is outside the
-\ ** dictionary, a dummy for "???" is returned.
-  dup inForth? if
-    unalign  ip>nfa
-  else
-    drop  dummyNFA
-  endif
-;
+    a>nfa ;
 
 : >zname ( xt -- znfa|xt )
     >name 1 + ;
 
 : .name ( a - )
-    \ Smart name print
-    \ NOTE: Slow!
+    \ Smart name print. (Slow!)
     dup body> inForth? if
         14 push-foreground
-        body> >name count ltype space
+        body> >name count lctype space
         pop-attribute
     else . then ;
 
 : .ip ( a - )
     dup body> inForth? if
         11 push-foreground
-        dup ip>nfa dup count ltype
+        dup ip>nfa dup count lctype
         name> - ?dup if
             ." +" .
         else
@@ -86,12 +96,12 @@ include %idir%/../textmode/textmode-tools.vfx
 : .data ( a - )
     dup body> inForth? if
         12 push-foreground
-        dup ip>nfa dup count ltype
-        name> >body - ?dup if
-            ." +" .
-        else
+        ip>nfa count lctype
+        \ name> >body - ?dup if
+        \     ." +" .
+        \ else
             space
-        then
+        \ then
         pop-attribute
     else . then ;
 
@@ -180,9 +190,6 @@ aka parse' parse
 
 : jumptable ( a - <name> ) ( ... - ... ) 
     create , does> @+ @ cells + @ ?execute ;
-
-: h. ( n - ) ." $" base @ swap hex u. base ! ;
-: #. ( n - ) base @ >r  decimal . r> base ! ;
 
 : h.8 ( n - )
     base @ hex  swap
