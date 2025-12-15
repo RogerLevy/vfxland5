@@ -117,7 +117,7 @@ redef : test-bit ( bit# adr - b )
     0 to cnt 
     list-count for 
         cnt 0 = if cr 2 indent then
-        list-next .name space
+        list-next .data space
         cnt 1 + 10 mod to cnt  
     loop drop cr ;
 
@@ -507,11 +507,11 @@ create %protocol  %class dmake {
 
 : >origin ( protocol-xt-addr - origin-addr ) cell+ ;
 
-: apply-protocol ( trait protocol class - )
-    {: trait0 protocol0 class0 | ofs :}
+: apply-protocol ( trait protocol classifier - )
+    {: trait0 protocol0 classifier0 | ofs :}
     protocol0 -> offset @ to ofs
-    trait0 ofs + @ class0 ofs + !
-    trait0 class0 ofs + >origin ! ;
+    trait0 ofs + @ classifier0 ofs + !
+    trait0 classifier0 ofs + >origin ! ;
 
 : has-unmapped-properties? ( trait - bool )
     {: trait0 :}
@@ -619,6 +619,9 @@ create %protocol  %class dmake {
     loop drop 
     src dest -> dependents add-to ;
 
+: or-table! ( src dest - )
+    /bit-table cell / for  over @ over @ or over ! cell cell 2+  loop 2drop ;
+
 : apply-trait ( trait class b:id? - )
     {: trait0 class0 id? | could? protocol0 origin :}
     class0 >cla @ %class <> abort" APPLY-TRAIT : Invalid destination - must be a class."
@@ -633,16 +636,16 @@ create %protocol  %class dmake {
         then
     then
     
-    \ Set classifier bit
+    \ Set classifier bits
     id? if
-        trait0 -> classifier# @ class0 -> id-table set-bit
+        trait0 -> id-table  class0 -> id-table or-table!
     then
     
     \ Cache the current capability status
-    trait0 -> classifier# @ class0 -> can-table test-bit to could?
+    trait0 -> classifier# @  class0 -> can-table test-bit to could?
     
-    \ Set capability bit
-    trait0 -> classifier# @ class0 -> can-table set-bit
+    \ Set capability bits
+    trait0 -> can-table  class0 -> can-table or-table!
     
     \ Merge protocols
     trait0 -> protocol-list list-count for
@@ -683,7 +686,43 @@ create %protocol  %class dmake {
     trait0 -> on-apply-xt @ ?dup if
         trait0 class0 rot execute  \ ( trait class - )
     then ;
-   
+
+: add-protocol ( protocol trait - )
+    -> protocol-list add-to ;
+
+: inherit-trait ( trait dest-trait b:id? - )
+    {: trait0 trait1 id? | could? protocol0 origin :}
+    trait1 >cla @ %trait <> abort" INHERIT-TRAIT : Invalid destination - must be a trait."
+    
+    \ Set classifier bits
+    id? if
+        trait0 -> id-table trait1 -> id-table or-table!
+    then
+    
+    \ Set capability bits
+    trait0 -> can-table trait1 -> can-table or-table!
+    
+    \ Merge protocols
+    trait0 -> protocol-list list-count for
+        list-next to protocol0
+        protocol0 trait1 supports-protocol? not if
+            protocol0 trait1 add-protocol
+        then
+        trait0 protocol0 trait1 apply-protocol
+    loop drop
+
+    
+    \ Merge properties
+    trait0 -> property-list list-count for
+        list-next
+        dup is-property-mapped? if drop else dup add-property 
+            trait0 map-property-copy then
+    loop drop
+    
+    \ Add class to trait's dependents
+    \ trait1 trait0 track-dependent
+;
+
 : class: ( <name> - )
     %class already? if
         preword find drop >body -> is-datatype @ abort" Cannot reopen datatypes."
@@ -707,6 +746,8 @@ create %protocol  %class dmake {
         %object classifier -1 apply-trait 
     } ;
 
+
+    
 : datatype ( size <name> - )
     class: classifier { is-datatype on  field-space } ;
 
@@ -728,13 +769,19 @@ create %protocol  %class dmake {
     template drop
     end-classifier ;
 
-: is-a ( [class] <trait> - )
-    \ Apply trait to class
-    \ [class] only required if outside class definition
-    ' dup >body -> cla @ %trait <> if
-        >name count f" Identifier %s is not a trait." -1 -rot .abort
+: is-a ( <trait> - )
+    \ Apply trait to current classifier
+    {: | trait0 :}
+    ' >body to trait0  
+    trait0 >cla @ %trait <> if
+        trait0 >name count f" Identifier %s is not a trait." -1 -rot .abort
     then
-    >body   classifier ?dup 0= if swap then -1 apply-trait ;
+    
+    classifier >cla @ %class = if
+        trait0 classifier -1 apply-trait 
+    else
+        trait0 classifier -1 inherit-trait
+    then ;
 
 : works-with ( [class] <trait> - )
     \ Apply trait to class without adding to id-table
@@ -758,9 +805,6 @@ create %protocol  %class dmake {
 
 : trait;
     end-classifier ;
-
-: add-protocol ( protocol trait - )
-    -> protocol-list add-to ;
 
 aka oexec execute
 
@@ -836,11 +880,9 @@ redef : ; ( - )
     then
     to protocol0
     
-    protocol0 {
-        me trait0 supports-protocol? not if
-            me trait0 add-protocol
-        then
-    }
+    protocol0 trait0 supports-protocol? not if
+        protocol0 trait0 add-protocol
+    then
     
     \ Compile the default behavior in the trait
     protocol0 trait0 implement-protocol
@@ -1118,11 +1160,11 @@ aka prop property
 
 : .object ( object - )
     dup valid-object? not if .data exit then
-    { cla @ .name me .data me . } ;
+    { cla @ .data  me .data  me . } ;
 
 : inspect-property ( property val-addr classifier - )
     {: property val-addr classifier :} 
-    property .name ." : " 
+    property .data ." : " 
     property classifier >property-type @ case
         TYPE_CELL       of val-addr ? endof  
         TYPE_INT        of val-addr ? endof 
@@ -1152,14 +1194,14 @@ aka prop property
     dup .object cr .props ;
 
 \ ==============================================================================
-\ _OBJECT Base Protocols
+\ %OBJECT Base Protocols
 \ ==============================================================================
 
 0 to classifier
 
 %object :: .summary ( - )
     \ Default : show class, name, and address
-    me .object ;
+    ." ( " me .object ." ) " ;
 
 \ TODO: don't need to save/restore DS in optimized builds
 aligned-page estack
@@ -1184,14 +1226,14 @@ variable errsp   estack errsp !
 ['] save-nibs ['] restore-nibs extends-catch
 
 \ ==============================================================================
-\ Apply _OBJECT to other system classifiers
+\ Add %OBJECT to system classes
 \ ==============================================================================
 
-%class is-a %object
-%trait is-a %object
-%protocol is-a %object
-%property is-a %object
-%static is-a %object
+%object %class    -1 apply-trait
+%object %trait    -1 apply-trait 
+%object %protocol -1 apply-trait 
+%object %property -1 apply-trait 
+%object %static   -1 apply-trait 
 
 \ ==============================================================================
 \ Global execution context
