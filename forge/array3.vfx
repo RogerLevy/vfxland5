@@ -41,9 +41,9 @@ trait: %iterable
     :: el@ ( i - val ) stub ;
     :: el? ( i - ) stub ;
     :: el! ( val i - ) stub ;
-    :: >!el ( ... index xt - ) stub ;
+    :: el@! ( ... index xt - ) stub ;
 
-    : !el ( ... index iterable xt - ) swap >!el ;
+    : !el ( ... index iterable xt - ) swap el@! ;
 
     \ :: each ( xt - ) ( val - ) stub ;
     \ :: !each ( xt - ) ( val - val' ) stub ;
@@ -163,7 +163,7 @@ public
 %array :: el! ( value index - )
     _slot _! ;
 
-%array :: >!el ( ... index xt - ) 
+%array :: el@! ( ... index xt - ) 
     swap _slot 2>r ( r: xt slot )
     r@ _@ 1 rpick you { execute } r> _! r> drop ;
 
