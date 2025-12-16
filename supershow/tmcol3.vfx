@@ -116,7 +116,7 @@ defer hit ( f: x y - f: x y )
 public
 
 continuation: tmcol>  ( x y w h tilemap me=obj - ) ( f - f )
-    {{
+    e{
         ( xt ) is hit ( tilemap ) map!
         map@ >ts @ 0 tile pile! 
         xgap s>f to fxgap
@@ -126,7 +126,7 @@ continuation: tmcol>  ( x y w h tilemap me=obj - ) ( f - f )
         init ud lr
         nx px f- f>p x +!
         ny py f- f>p y +! 
-    }} ;
+    e} ;
 
 \ ------------------------------------------------------------------------------
 \ Slide around corners (to be called in tmcol>'s body)

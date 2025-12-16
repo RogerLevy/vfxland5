@@ -84,10 +84,10 @@ borrow array3>> slot
     begin-batch  a rows for cols tiles loop drop  end-batch ;
 
 %tilemap :: draw ( - )
-    {{ 
+    e{ 
         <at
         ts @ >baseid @ pile!
         0 0 me spot` me dims`` drawbg 
-    }} ;
+    e} ;
 
 fast}

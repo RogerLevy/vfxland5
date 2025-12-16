@@ -84,7 +84,7 @@ public
 
 : process-input  poll pump system-controls ;
 : draw-game  cls 0 0 at 'show @ execute ;
-: process-tick  {{ ['] draw-game draw-tv }} ;
+: process-tick  e{ ['] draw-game draw-tv e} ;
 : frame  update-delta process-input process-tick present ;
 
 || : pre ( - )

@@ -146,8 +146,8 @@ continuation: as> ( %actor - ) ( - ) swap { ( xt ) execute } ;
 \ Fields that are part of the EC "inherit" values up the object stack, when fetching.
 \ The "default" EC is called ROOTEC.
 \ We can create our own EC's to use in classes or individual objects, 
-\ or use {{ }} for special cases where we need a throwaway EC. 
-\ {{ }} save/restore the current object's EC in a dedicated stack (the old EC stack).
+\ or use e{ e} for special cases where we need a throwaway EC. 
+\ e{ e} save/restore the current object's EC in a dedicated stack (the old EC stack).
 
 0 value s/ec
 256 constant EC_MAX_SIZE
@@ -217,23 +217,23 @@ variable ecsp ecs ecsp !
 
 variable tcsp  tcs tcsp !
 
-|| : c{  ( ec - ) 
+|| : _e{  ( ec - ) 
     4 ecsp c+!  ecp@ ecsp @ !   ecp! ;
 
-|| : c}  ( - )    
+|| : _e}  ( - )    
     ecsp @ @ ecp!  -4 ecsp c+! ;
 
-: {{ ( - )
+: e{ ( - )
     ecp@ 
-    tcsp @ dup c{  tcs - 256 + 4095 and tcs + tcsp ! 
+    tcsp @ dup _e{  tcs - 256 + 4095 and tcs + tcsp ! 
     ecp@ s/ec move ;
 
-: }} ( - )
-    c}
+: e} ( - )
+    _e}
     tcsp @ tcs - 256 - 4095 and tcs + tcsp ! ;
 
 continuation: ec> ( - ) ( - )
-    {{ execute }} ;
+    e{ execute e} ;
 
 \ ==============================================================================
 \ Classes
