@@ -13,6 +13,7 @@ redef : ticks  ( n - ms )
     sdelta f>p to pdelta ;
 
 || : spin ( - )
+    going @ -exit
     {: | ev[ /ALLEGRO_EVENT ] :}
     frame-queue ev[ al_wait_for_event
     frame-queue al_flush_event_queue ;
