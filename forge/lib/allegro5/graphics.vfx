@@ -4,23 +4,32 @@
 
 \ Color
 
-ec-cell penr \ fixed
-ec-cell peng \ fixed
-ec-cell penb \ fixed
-ec-cell pena \ fixed
+ec-cell ppenr \ fixed
+ec-cell ppeng \ fixed
+ec-cell ppenb \ fixed
+ec-cell ppena \ fixed
 ec-cell ppenx \ fixed
 ec-cell ppeny \ fixed
 
-: frgba@ ( - f:r f:g f:b f:a )
-    penr@ p>f peng@ p>f penb@ p>f pena@ p>f ; 
+: rgba@fds
+    ppenr@ p>f f>ds
+    ppeng@ p>f f>ds
+    ppenb@ p>f f>ds
+    ppena@ p>f f>ds    
+;
 
-: frgba ( f:r f:g f:b f:a - )
-    f>p pena! f>p penb! f>p peng! f>p penr! ;
+: rgba ( r. g. b. a. - )
+    ppena! ppenb! ppeng! ppenr! ;
 
-1e 1e 1e 1e frgba
+1. 1. 1. 1. rgba
+
+: c>p  $ff and s>f 255e f/ f>p ;
 
 : rgba8 ( n - )  
-    c>f 8 << c>f 8 << c>f 8 << c>f drop frgba ;
+    dup c>p >r 8 >>
+    dup c>p >r 8 >> 
+    dup c>p >r 8 >> 
+    c>p r> r> r> rgba ;
 
 \ Position
 : at ( x y - ) >p ppeny! >p ppenx! ;
@@ -98,7 +107,7 @@ ec-cell fnt
     over 0= if 3drop exit then 
     >r zstr[ zplace  zstr[ r> s>f f>ds   
     line-spacing @ s>f f>ds to lh to w to z 
-    fnt@  frgba@  at@f w lh 0 z al_draw_multiline_text ;
+    fnt@  rgba@fds  at@f w lh 0 z al_draw_multiline_text ;
 
 : print ( a len - )
     winw penx@ - mltext ;
@@ -113,4 +122,4 @@ ec-cell fnt
     zstr[ zplace  zstr[  fnt@  swap  al_get_text_width ;  
 
 : glyph ( n - )
-    >r  fnt@ frgba@ at@f  r> al_draw_glyph ;
+    >r  fnt@ rgba@fds at@f  r> al_draw_glyph ;

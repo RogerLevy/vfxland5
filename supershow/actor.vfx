@@ -162,7 +162,7 @@ redef : halt  beha off  0 0 vx 2! ;
 \ Actor Inspection
 \ =============================================================================
 
-|| : .status ( - )
+: .status ( - )
     benched @ if ." (BENCHED) " exit then
     en @ 0= if ." (FREE) " then ;
 
