@@ -77,25 +77,24 @@ extern BOOL SetThreadPriority( hthread, priority );
 
     ALLEGRO_VERSION 0 al_install_system check
     
+    al_install_audio 0= abort" Error installing audio."
+    0 to mixer  0 to voice
+    64 al_reserve_samples 0= abort" Allegro: Error reserving samples." 
+    al_init_acodec_addon check
+
     al_init_image_addon check
     al_init_native_dialog_addon check
     al_init_primitives_addon check
     al_init_font_addon
     al_init_ttf_addon check
-    al_init_acodec_addon check
-    al_install_audio 0= abort" Error installing audio."
-    al_install_haptic check
     al_install_joystick check
+    al_install_haptic check
     al_install_mouse check
     al_install_touch_input check
     
     0 pad al_get_monitor_info 0= throw
     pad 2 cells + @  pad @  - to monw
     pad 3 cells + @  pad cell+ @  - to monh
-
-    0 to mixer  0 to voice
-    64 al_reserve_samples 0= abort" Allegro: Error reserving samples." 
-    +audio
 
     al_create_builtin_font to builtin-font
 
@@ -128,6 +127,7 @@ extern BOOL SetThreadPriority( hthread, priority );
     ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender
 
     reset-keyboard  \ depends on queue
+    +audio
 ;
 
 : resize-display ( w h fullscreen? - )
