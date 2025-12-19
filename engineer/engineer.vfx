@@ -7,8 +7,10 @@
 \ =============================================================================
 
 also substitutions definitions
-    create vfxland5 256 allot&erase
+    cstring vfxland5
     s" %idir%\.." expand vfxland5 place
+    cstring home
+    cstring project
 only forth definitions
 
 \ =============================================================================
@@ -103,15 +105,17 @@ REDEF : MODULE  isolation @ if empty then require ;
     s" main.vfx" fileExist? if s" main.vfx" floaded then ;
 
 also substitutions 
-    aka vfxland5 vfxland5
+    aka vfxland5$ vfxland5
+    aka home$ home
+    aka project$ project
 previous
 
 : ?..  wd@ '\' ending s" bin" s= if s" .." $cwd then ;
 : init-xrefs  +xrefs  256 1024 * xref-kb ;
-: init-vfxland5-path  s" %bin%\.." expand vfxland5 place ;
+: init-vfxland5-path  s" %bin%\.." expand vfxland5$ place ;
 : init-paths  init-vfxland5-path  ;
 : dev-init  empty init-xrefs init-paths ;
-: init-home-path  ?.. wd@ home-path$ place ;
+: init-home-path  ?.. wd@ home$ place ;
 
 : frigid ( - )
     \ Initialize runtime environment 

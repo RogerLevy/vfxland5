@@ -4,8 +4,6 @@ defer desktop ( - ) \ default behavior of SHOW (restored on EMPTY)
 defer boot ( - ) \ app startup code like loading assets
 defer onSwitchIn ( - ) \ Window gets focus
 variable going
-cstring home-path$
-cstring prj-path$
 create funcs 256 12 * allot&erase
 0 value reload-shift?
 variable _repl  \ _repl on   \ enable commandline

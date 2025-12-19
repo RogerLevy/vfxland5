@@ -31,7 +31,7 @@
     then
 
     \ Project?
-    fn len home-path$ count f" %s/%s/main.vfx" file-exists? 
+    fn len home$ count f" %s/%s/main.vfx" file-exists? 
     fn len f" %s/main.vfx" file-exists? or if
         fn len f" ldp %s" evaluate
         exit
@@ -42,8 +42,8 @@
 
     fn len ?notfound 
 
-    prj-path$ count fn len instring not 
-    prj-path$ count nip 0= or if
+    project$ count fn len instring not 
+    project$ count nip 0= or if
         fn len -file $cwd
     then
 
@@ -61,7 +61,7 @@ honing-wl +order definitions
 pop-order
 
 : rld ( - )
-    prj-path$ count $cwd
+    project$ count $cwd
     honing off
     cartridge
     ; \ repl on ;
@@ -90,7 +90,7 @@ pop-order
             name[ count path[ place
         else
             name[ count 
-            home-path$ count f" %s\%s" >lowercase path[ place
+            home$ count f" %s\%s" >lowercase path[ place
         then 
     then
     path[ count f" %s\main.vfx" file-exists? not if
@@ -98,15 +98,15 @@ pop-order
         exit 
     then
     name[ count >uppercase f" Loading %s..." type cr
-    path[ count >abspath prj-path$ place
-    prj-path$ count $cwd
+    path[ count >abspath project$ place
+    project$ count $cwd
     500 ms
     restore-window-pos >vfx
     cartridge
 ;
 
 : +project ( - <name> )
-    home-path$ count $cwd
+    home$ count $cwd
     bl preparse f" spunk\project.bat %s" cr 2dup type shellcmd
     200 ms
     ldp
