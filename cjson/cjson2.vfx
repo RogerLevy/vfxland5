@@ -95,8 +95,8 @@ private
 : add-int ( n zkey cjson - )
     2>r s>f 2r> add-float ;
 
-: get-string-content ( cjson - a len )
-    _cJSON_GetStringValue@4 zcount ;
+\ : get-string-content ( cjson - a len )
+\     _cJSON_GetStringValue@4 zcount ;
 
 : ?get-item ( cjson n|zkey - cjson|0 )
     over is-array? if 
@@ -118,11 +118,11 @@ public
 aka j>j get-item 
 : ?j>j ( json key - json'|0 ) ?get-item ;
 
-: j>n ( zkey cjson - n )      get-item j@n ;
-: j>f ( zkey cjson - f:n )    get-item j@f ;
-: j>p ( zkey cjson - p )      get-item j@p ;
-: j>z ( zkey cjson - z$ )     get-item j@z ;
-: j>s ( zkey cjson - a len )  get-item j@s ;
+: j>n ( json key - n )      get-item j@n ;
+: j>f ( json key - f:n )    get-item j@f ;
+: j>p ( json key - p )      get-item j@p ;
+: j>z ( json key - z$ )     get-item j@z ;
+: j>s ( json key - a len )  get-item j@s ;
 
 : ?j>n ( json key - n|0 )     ?get-item dup -exit j@n ;
 : ?j>f ( json key - f:n|f:0 ) ?get-item ?dup if j@f else 0e then ;

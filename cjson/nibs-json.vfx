@@ -3,9 +3,7 @@
 \ Supports serialization of NIBS objects 
 \ ==============================================================================
 
-\ ==============================================================================
-\ NIBS serialization
-\ ==============================================================================
+require %idir%/cjson.vfx
 
 private
 
@@ -72,7 +70,7 @@ borrow nib2>> prop+
 : save-as-json ( object path len - )
     serjson> add-properties-to ;
 
-: object>cjson ( object - cjson )
+: *json ( object - cjson )
     new-object dup >r add-properties-to r> ;
 
 : read-props ( cjson obj - )

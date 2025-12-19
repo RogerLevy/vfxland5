@@ -5,7 +5,7 @@ also cjson>>
 
 s" test.json" load-file parse-json value it
 
-: user[] z" users" it get-array get-item ;
+: user[] "users" it get-array get-item ;
 0 user[] cjson. cr
 1 user[] cjson. cr
 
@@ -17,36 +17,36 @@ s" test.json" load-file parse-json value it
     
     \ Create object and add fields
     new-object to obj1
-    z" Alice" z" name" obj1 add-string
-    z" Warrior" z" class" obj1 add-string
-    100 z" health" obj1 add-int
-    50 z" x" obj1 add-int
-    25 z" y" obj1 add-int
+    "Alice" "name" obj1 add-string
+    "Warrior" "class" obj1 add-string
+    100 "health" obj1 add-int
+    50 "x" obj1 add-int
+    25 "y" obj1 add-int
     
     \ Print the JSON
     ." Created object: " obj1 cjson. cr
     
     \ Create second object
     new-object to obj2
-    obj1 z" nested" obj2 add-object
-    z" Bob" z" name" obj2 add-string
-    75 z" mana" obj2 add-int
+    obj1 "nested" obj2 add-object
+    "Bob" "name" obj2 add-string
+    75 "mana" obj2 add-int
     
     \ Test floats
-    3.14159e0 z" pi" obj2 add-float
-    98.6e0 z" temperature" obj2 add-float
+    3.14159e0 "pi" obj2 add-float
+    98.6e0 "temperature" obj2 add-float
 
     \ Verify reads
-    z" name" obj2 get-string 
+    "name" obj2 get-string 
     ." Name field: " type cr
   
-    z" mana" obj2 get-int
+    "mana" obj2 get-int
     ." Mana field: " . cr
     
-    z" pi" obj2 get-float
+    "pi" obj2 get-float
     ." Pi value: " f. cr
     
-    z" temperature" obj2 get-float
+    "temperature" obj2 get-float
     ." Temperature: " f. cr
     
     \ Final output
@@ -59,28 +59,28 @@ test-cjson-setters
 : test-cjson-serialize
     s" out.json" serjson>
         >r 
-        z" test" z" foo" r@ add-string
-        123 z" bar" r@ add-int
+        "test" "foo" r@ add-string
+        123 "bar" r@ add-int
         r> drop ;
 
 test-cjson-serialize
 
-class: actor
+class: %actor
     prop x :fixed <save
     prop y :fixed <save
     prop hp :int <save
     template { 5. x ! 10. y ! 15 hp ! }
 class;
 
-actor object actor0
+%actor object actor0
 
 actor0 s" actor.json" save-as-json
 
-3 actor object-array scene0
+3 %actor array scene0
 
-0 scene0 deref-index { 1000. rnd 500. - x ! 1000. rnd 500. - y ! 100 rnd hp ! } 
-1 scene0 deref-index { 1000. rnd 500. - x ! 1000. rnd 500. - y ! 100 rnd hp ! } 
-2 scene0 deref-index { 1000. rnd 500. - x ! 1000. rnd 500. - y ! 100 rnd hp ! } 
+0 scene0 el@ { 1000. rnd 500. - x ! 1000. rnd 500. - y ! 100 rnd hp ! } 
+1 scene0 el@ { 1000. rnd 500. - x ! 1000. rnd 500. - y ! 100 rnd hp ! } 
+2 scene0 el@ { 1000. rnd 500. - x ! 1000. rnd 500. - y ! 100 rnd hp ! } 
 
 || 0 value arr 0 value path 0 value len 0 value croot 0 value cjson-arr
 also cjson>> \ necessary because of how || works ... TODO: gonna revisit scope.vfx to fix stuff like this
@@ -91,22 +91,22 @@ also cjson>> \ necessary because of how || works ... TODO: gonna revisit scope.v
         to croot
         new-array to cjson-arr
         arr #items for
-            i arr deref-index object>cjson 0 cjson-arr add-object
+            i arr el@ *json 0 cjson-arr add-object
         loop 
-        cjson-arr z" actors" croot add-array ;
+        cjson-arr "actors" croot add-array ;
 
 scene0 s" scene.json" save-objects
 
-100 cell stack teststack
+100 %addr stack teststack
 
 : one  make dup teststack push ;
     
 : read-actors ( path len - )
     {: path path-len | croot cobj buf buf-len :}
     path path-len load-json to croot
-    croot z" actors" jcount for
+    croot "actors" jcount for
         dup i j@ to cobj
-        cobj z" class" @string evaluate one cobj swap read-props
+        cobj "class" @string evaluate one cobj swap read-props
     loop  drop ;
 
 s" scene.json" read-actors
