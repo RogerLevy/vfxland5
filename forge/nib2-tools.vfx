@@ -84,7 +84,7 @@
         instance-size @ next-ofs @ - ?dup if ."  ("  . ." remaining)" then cr
     ."     Classifier #: " classifier# @ . cr
     ."     Properties: " property-list .list
-    ."     Protocols>> (not currently tracked!)" cr \ protocol-list .list
+    ."     Protocols: (TODO:)" cr \ protocol-list .list
     ."     Dependents: " dependents .list 
     
     me .traits
@@ -100,7 +100,7 @@
     ."     Trait: " me body>name type cr
     ."     Classifier #: " classifier# @ . cr
     ."     Properties: " property-list .list
-    ."     Protocols>> " protocol-list .list
+    ."     Protocols: " protocol-list .list
     ."     Dependents: " dependents .list
     
     me .parents

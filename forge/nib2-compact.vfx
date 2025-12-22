@@ -51,9 +51,10 @@
     preword 1 + c@ '%' <> if 0 exit then
     pre-xt dup 0= if consume -1 abort" Token not found." then
     >body dup is-class? not if
-        consume -1 abort" Token preceded by % must be a classifier."
+        drop 0 exit
+        \ consume -1 abort" Classifier not a class."
     then
-    derive -1 consume ;
+    derive consume -1 ;
 
 : "trait" ( $ - a len )
     {: $ :}
@@ -67,7 +68,7 @@
     preword "word"? if
         bl word "trait" sfind
         0= if consume -1 abort" Token not found." then
-        >body dup is-trait? not abort" Token surrounded by quotes must be a trait." 
+        >body dup is-trait? not abort" Classifier not a trait." 
         ( trait ) classifier 0 apply-trait
         -1
     else 0 then ;
@@ -77,7 +78,7 @@
     preword 1 + c@ '%' <> if 0 exit then
     pre-xt dup 0= if consume -1 abort" Token not found." then
     >body dup is-trait? not if
-        consume -1 abort" Token preceded by % must be a classifier."
+        consume -1 abort" Classifier not a trait."
     then
     classifier -1 apply-trait consume -1 ;
     
@@ -91,10 +92,24 @@
     then
     ?comment ;
 
+: [word]?
+    {: $ :}
+    $ 1 + c@ '[' =
+    $ count + 1 - c@ ']' = and ;
+
+: ?word ( - flag )
+    \ %property already? if 0 exit then
+    preword [word]? if
+        bl parse 1 /string 1 - evaluate 
+        -1 exit
+    then 
+    0 ;
+
 || redef : token ( - )
     ?invalid
-    ?class ?exit
+    ?class ?exit \ catch 0= if consume exit then
     ?trait ?exit
+    ?word ?exit
     *property ;
 
 : ?fieldspace ( - ) 
