@@ -84,7 +84,7 @@ public
 public
 
 : process-input  poll pump system-controls ;
-: draw-game  cls 0 0 at 'show @ execute ;
+: draw-game  cls 0 0 at 'show @ ?execute ;
 : process-tick  e{ ['] draw-game draw-tv e} ;
 : frame  update-delta process-input process-tick present ;
 
@@ -101,7 +101,8 @@ public
     frame-timer al_stop_timer 
     going off
     fullscreen? if windowed winmode then
-    >vfx ;
+    >vfx 
+    global as ;
 
 : go ( - ) 
     going @ ?exit pre 
