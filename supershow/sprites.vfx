@@ -39,11 +39,11 @@ class;
 || variable alen \ pointer to len in animation header
 || : >frames ( anim - a ) cell+ cell+ ;
 || : ?baseid  a.ts @ dup if 0 tile then ;
-|| : update  a.ofs @ >i cells anm @ + @ ?baseid + a.flp @ xor bmp ! ;
+|| : update  a.ofs @ >i cells anm @ >frames + @ ?baseid + a.flp @ xor bmp ! ;
 || : ?done  a.ofs @ a.spd @ + a.len @ >p >= -exit  a.done on ;
 
 : cycle ( anim spd. - ) \ to stop, say `anm off`
-    a.spd !  dup >frames anm !  @+ a.ts ! @ a.len !  0 a.ofs !  a.done off  update ;
+    a.spd !  dup anm !  @+ a.ts ! @ a.len !  0 a.ofs !  a.done off  update ;
 
 : animation ( ts <name> - )  \ tileset , len , ofs , ofs , ofs , ... ofs ,
     create , here alen ! 0 , ;
