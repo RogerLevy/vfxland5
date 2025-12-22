@@ -60,11 +60,11 @@ class;
     2dup < if 1 + swap do i frame, loop
     else swap do i frame, -1 +loop then ;
 
-: advance-animation ( - bmpid )    
-    a.spd @ a.ofs @ + a.len @ >p mod a.ofs !
+: advance-animation ( spd. - bmpid )    
+    a.spd @ p* a.ofs @ + a.len @ >p mod a.ofs !
     ?done  the-frame ;
 
 : animate ( - )
-    hold @ ?exit actives> anm @ -exit advance-animation bmp ! ;
+    hold @ ?exit actives> anm @ -exit 1.0 advance-animation bmp ! ;
 
 
