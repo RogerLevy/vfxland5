@@ -269,6 +269,12 @@ redef : stack ( max-slots element-class <name> - )
     r> data @   slot-size @ max-slots @ *   r> min   move 
     item-count @ max-slots @ min item-count ! ;
 
+: stack{ ( element-class - )
+    %stack _array{ ;
+
+: stack} ( - array )
+    } here data @ - slot-size @ /   dup item-count ! max-slots !   me } ;
+
 \ ==============================================================================
 \ Convenience Words
 \ ==============================================================================
