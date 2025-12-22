@@ -2,7 +2,7 @@ public
 
 trait: %dltree
     is-a %iterable
-    prop item-count :int <save
+    is-a %lifo
 
     prop parent   :addr 
     prop lowest   :addr 

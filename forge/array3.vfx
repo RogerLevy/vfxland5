@@ -224,6 +224,10 @@ trait: %lifo
     :: vacate ( - ) stub ;
 trait;
 
+redef : add ( class - node )
+    me %lifo is? not abort" ADD : Current object is not a %lifo, aborting object creation." 
+    make dup me push ;
+
 \ trait: %fifo
 \     :: enqueue ( item - ) stub ;
 \     :: dequeue ( - item ) stub ;
