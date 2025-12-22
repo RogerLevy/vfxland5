@@ -1,11 +1,17 @@
+public
+
+: used ( - n ) here dp - ;
+
 private
 
-variable backup
-: used   here firstname  - ;
 : hunk   used cell+ allocate throw ;
-: pin  hunk backup !  firstname used backup @ lplace ;
+: ?free  ?dup -exit free throw ;
 
 public
 
-: pristine  rs  backup @ lcount firstname swap move ;
+: remember  ( variable - ) 
+    dup @ ?free  hunk over !  dp used rot @ lplace ;
+
+: pristine  ( variable - ) 
+    @ lcount dp swap move   quit ;
 

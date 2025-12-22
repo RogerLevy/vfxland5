@@ -16,7 +16,6 @@ only forth definitions
 \ =============================================================================
 
 include %idir%/checks.vfx
-include %idir%/trampoline.vfx
 include %idir%/variables.vfx \ System variables
 include %idir%/window.vfx
 
@@ -28,6 +27,7 @@ fload %idir%/../forge/lib/allegro5/graphics.vfx   \ Graphics functions
 fload %idir%/../forge/lib/allegro5/input.vfx      \ Input functions
 fload %idir%/border.vfx     \ TV border / scaling
 fload %idir%/go.vfx         \ Main Loop
+include %idir%/trampoline.vfx
 
 \ =============================================================================
 \ Reset System Classifiers
@@ -80,7 +80,6 @@ borrow nib2>> init-nib
     reset-strout-buffers
     init-nib
     reset-system-classifiers
-    ['] noop 'show !
     ['] noop is boot
     ['] noop is onSwitchIn
     honing off ;
@@ -114,7 +113,6 @@ previous
 : dev-init  empty init-xrefs init-paths ;
 : init-home-path  ?.. wd@ home-path$ place ;
 
-borrow trampoline>> pin
 : frigid ( - )
     \ Initialize runtime environment 
     rs
@@ -126,7 +124,6 @@ borrow trampoline>> pin
     *display
     builtin-font fnt! 
     0d to ustime 
-    pin
 ;
 
 redef : main ( - )
@@ -217,7 +214,8 @@ public
 \    init-ide
     \ zcommand zcount strip-exe interpret-string \ ide-interpret
     \ ?dup if .throw else ( go ) then 
-    >vfx ;
+    >vfx 
+    backup remember ;
 
 ' engineer-entrypoint is EntryPoint
 ' engineer.cold is .cold

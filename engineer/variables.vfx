@@ -31,6 +31,7 @@ wordlist constant honing-wl
 0 value pdelta \ fixed, in seconds
 0e fvalue sdelta \ in seconds
 create zcommand 256 allot 
+variable backup
 
 \ =============================================================================
 \ Add protection from unintentional redefinitions (use REDEF) 
