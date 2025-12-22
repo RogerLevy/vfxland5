@@ -31,19 +31,24 @@ class;
 \ Frame animation
 \ =============================================================================
 
-class: %actor
+trait: %animator
     prop anm prop a.ts prop a.spd prop a.len
     prop a.ofs prop a.done prop a.flp
+trait;
+
+class: %actor
+    is-a %animator
 class;
 
 || variable alen \ pointer to len in animation header
 || : >frames ( anim - a ) cell+ cell+ ;
 || : ?baseid  a.ts @ dup if 0 tile then ;
-|| : update  a.ofs @ >i cells anm @ >frames + @ ?baseid + a.flp @ xor bmp ! ;
+|| : the-frame  a.ofs @ >i cells anm @ >frames + @ ?baseid + a.flp @ xor ;
 || : ?done  a.ofs @ a.spd @ + a.len @ >p >= -exit  a.done on ;
 
 : cycle ( anim spd. - ) \ to stop, say `anm off`
-    a.spd !  dup anm !  @+ a.ts ! @ a.len !  0 a.ofs !  a.done off  update ;
+    a.spd !  dup anm !  @+ a.ts ! @ a.len !  0 a.ofs !  a.done off  
+    the-frame bmp ! ;
 
 : animation ( ts <name> - )  \ tileset , len , ofs , ofs , ofs , ... ofs ,
     create , here alen ! 0 , ;
@@ -55,10 +60,11 @@ class;
     2dup < if 1 + swap do i frame, loop
     else swap do i frame, -1 +loop then ;
 
+: advance-animation ( - bmpid )    
+    a.spd @ a.ofs @ + a.len @ >p mod a.ofs !
+    ?done  the-frame ;
+
 : animate ( - )
-    hold @ ?exit actives>
-        anm @ -exit
-        a.spd @ a.ofs @ + a.len @ >p mod a.ofs !
-        update ?done ;
+    hold @ ?exit actives> anm @ -exit advance-animation bmp ! ;
 
 
