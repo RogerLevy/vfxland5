@@ -20,3 +20,9 @@ MAX_NODES %addr stack frees
 
 : recycle ( node - )
     dup remove  frees push ;
+
+: ?nodeerr  
+    me %node is? not abort" ADD : Current object is not a node, aborting object creation." ;
+
+redef : add ( class - node )
+    ?nodeerr  make dup me push ;
