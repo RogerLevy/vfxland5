@@ -28,8 +28,8 @@ aka cd cwd
 aka << lshift
 aka >> rshift
 : c>f  dup 24 >> s>f 255e f/ ;
-: (dword)  base @ >r hex  0 <# #s 'x' hold '0' hold #> r> base ! ;
-: h. ( n - ) (dword) type space ;
+: (hword)  base @ >r hex  0 <# #s 'x' hold '0' hold #> r> base ! ;
+: h. ( n - ) (hword) type space ;
 : (word)  base @ >r decimal  0 <# #s #> r> base ! ;
 : #. ( n - ) (word) type space ;
 
@@ -43,7 +43,7 @@ include %idir%/../textmode/textmode-tools.vfx
     \ the relevant NFA.  If not found, return temporary string containing
     \ the given address in hex.
     {: | fb[ 256 ] :}
-    dup (dword) fb[ place
+    dup (word) fb[ place
     \ 13 -			\ NFA (count byte) is at least this far back
     1024 for
         dup InForth? 0= if drop  fb[  unloop exit then
@@ -57,7 +57,7 @@ include %idir%/../textmode/textmode-tools.vfx
     \ the relevant NFA.  If not found, return temporary string containing
     \ the given address in hex.
     {: | fb[ 257 ] :}
-    dup (dword) fb[ place  0 fb[ count + c!
+    dup (word) fb[ place  0 fb[ count + c!
     unalign 
     13 -			\ NFA (count byte) is at least this far back
     1024 for

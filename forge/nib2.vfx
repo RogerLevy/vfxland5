@@ -337,12 +337,15 @@ create-class %trait {
 
 : scaffold ( class addr - )
     swap over >cla !   \ Store class pointer
-    copy-template ;
+    dup >r copy-template 
+    ecp@ r> -> ecp ! ;
 
 redef : construct ( ... class addr - )
     swap over >cla !   \ Store class pointer
+    ecp@ >r
     {
         me copy-template
+        r> me -> ecp !
         cla @ -> constructor-xt @ ?dup if execute then
     } ;
 
@@ -370,6 +373,8 @@ redef : make ( ... class - object )
 \ ==============================================================================
 \ Members
 \ ==============================================================================
+
+here to me 0 , rootec , 
 
 create %property  %class dmake {
     (add-object-system-trait-bit)
