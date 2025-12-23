@@ -4,11 +4,11 @@ trait: %dltree
     is-a %iterable
     is-a %lifo
 
-    prop parent   :addr 
-    prop lowest   :addr 
-    prop highest  :addr  
-    prop next     :addr
-    prop prev     :addr   
+    prop parent   :ref %dltree
+    prop lowest   :ref %dltree
+    prop highest  :ref %dltree 
+    prop prev     :ref %dltree  
+    prop next     :ref %dltree
 trait;
 
 : dlremove ( dltree -- )
