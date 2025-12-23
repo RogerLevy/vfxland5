@@ -29,9 +29,9 @@ aka << lshift
 aka >> rshift
 : c>f  dup 24 >> s>f 255e f/ ;
 : (dword)  base @ >r hex  0 <# #s 'x' hold '0' hold #> r> base ! ;
-: h. ( n - ) (dword) type ;
+: h. ( n - ) (dword) type space ;
 : (word)  base @ >r decimal  0 <# #s #> r> base ! ;
-: #. ( n - ) (word) type ;
+: #. ( n - ) (word) type space ;
 
 : screate ( name len - ) ( - a )
     {: | name$[ 256 ] :} name$[ place name$[ $create ;

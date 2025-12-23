@@ -1,6 +1,8 @@
 \ ------------------------------------------------------------------------------
 \ Engineer OOP extension - NIBS (NIBS Interactive Behavior System) a.k.a Nib 2.0
 \ ------------------------------------------------------------------------------
+\ 12/23/2025 TODO: Fix protocol propagation
+
 optimising on
 
 1024 ?constant #max-classifiers
