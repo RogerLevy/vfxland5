@@ -2,6 +2,10 @@
 \ Engineer OOP extension - NIBS (NIBS Interactive Behavior System) a.k.a Nib 2.0
 \ ------------------------------------------------------------------------------
 \ 12/23/2025 TODO: Fix protocol propagation
+\ 12/23/2025 TODO: Add >static syntax
+\ 12/23/2025 TODO: Fix inheritance of traits that inherit from already-inherited traits
+\ 12/23/2025 TODO: implement automatic template resize in >TEMPLATE
+\ 12/23/2025 TODO: don't need to SAVE-DS in non-debug builds
 
 optimising on
 
@@ -648,7 +652,6 @@ create %protocol  %class dmake {
     drop r> ;
 
 : is? ( object|class classifier - bool )
-    \ TODO: Optimize and put the runtime checks in optional validations.
     dup valid-classifier? not abort" IS? : Invalid classifier."
     over valid-object? not if 2drop 0 exit then
     -> classifier# @ swap
@@ -805,7 +808,7 @@ create %protocol  %class dmake {
     class0 -> class-template @ ?dup 0= if
         class0 dmake class0 -> class-template !
         class0 -> class-template @ class0 sizeof cell /string erase
-        1024 allot&erase  \ TODO: implement automatic template resize in >TEMPLATE
+        1024 allot&erase  
         rootec class0 -> class-template @ -> ecp !
         class0 -> class-template @
     then ;
@@ -1018,7 +1021,7 @@ redef : ; ( - )
         ( source-template ) 
         source-class -> instance-size @` dest-class sizeof` max
         move,
-        1024 allot&erase  \ TODO: implement automatic template resize in >TEMPLATE
+        1024 allot&erase
         dest-class dup -> class-template @ >cla !
     then
     
@@ -1076,7 +1079,6 @@ aka prop property
 
 : can? ( object|class classifier|protocol-xt - bool )
     {: obj-or-class second-param | class-to-check :}
-    \ TODO: Optimize and put the runtime checks in optional validations.
     obj-or-class valid-object? obj-or-class valid-class? or not 
     abort" CAN? : Invalid object or class."
     
@@ -1215,7 +1217,6 @@ aka prop property
     \ Default : show class, name, and address
     ." ( " me .object ." ) " ;
 
-\ TODO: don't need to save/restore DS in optimized builds
 aligned-page estack
 variable errsp   estack errsp ! 
 : >e ( ? - ) errsp @ !  4 errsp c+! ;
