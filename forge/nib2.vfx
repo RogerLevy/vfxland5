@@ -609,6 +609,45 @@ create %protocol  %class dmake {
     cell nstatic ;
 
 \ ==============================================================================
+\ Validation
+\ ==============================================================================
+
+: valid-class? ( ? - n:res )
+    dup firstname here within  >r  \ in dictionary
+    r@ 0< if
+        dup >cla @ %class = r> and >r
+    then
+    drop r> ;
+
+: valid-trait? ( ? - n:res )
+    dup firstname here within  >r  \ in dictionary
+    r@ 0< if
+        dup >cla @ %trait = r> and >r
+    then
+    drop r> ;
+
+: valid-classifier? ( ? - n:res )
+    dup firstname here within  >r  \ in dictionary
+    r@ 0< if
+        dup -> magic @ MAGIC_CLASSIFIER = r> and >r
+    then
+    drop r> ;
+
+: valid-object? ( ? - n:res )
+    dup firstname here within  >r  \ in dictionary
+    r@ 0< if
+        dup >cla @ ( class ) valid-class? r> and >r
+    then
+    drop r> ;
+
+: is? ( object|class classifier - bool )
+    \ TODO: Optimize and put the runtime checks in optional validations.
+    dup valid-classifier? not abort" IS? : Invalid classifier."
+    over valid-object? not if 2drop 0 exit then
+    -> classifier# @ swap
+    dup >cla @ %class <> if >cla @ then -> id-table test-bit ;
+
+\ ==============================================================================
 \ Classifier definition
 \ ==============================================================================
 
@@ -625,6 +664,7 @@ create %protocol  %class dmake {
 : apply-trait ( trait class b:id? - )
     {: trait0 class0 id? | could? protocol0 origin :}
     class0 >cla @ %class <> abort" APPLY-TRAIT : Invalid destination - must be a class."
+    class0 trait0 is? ?exit
     
     \ Check if trait has NEW properties that class can't handle
     class0 reopened? if
@@ -693,6 +733,7 @@ create %protocol  %class dmake {
 : inherit-trait ( trait dest-trait b:id? - )
     {: trait0 trait1 id? | could? protocol0 origin :}
     trait1 >cla @ %trait <> abort" INHERIT-TRAIT : Invalid destination - must be a trait."
+    trait1 trait0 is? ?exit
     
     \ Set classifier bits
     id? if
@@ -1023,44 +1064,8 @@ redef : ; ( - )
 aka nprop nproperty
 aka prop property
 
-\ Validation
-: valid-class? ( ? - n:res )
-    dup firstname here within  >r  \ in dictionary
-    r@ 0< if
-        dup >cla @ %class = r> and >r
-    then
-    drop r> ;
-
-: valid-trait? ( ? - n:res )
-    dup firstname here within  >r  \ in dictionary
-    r@ 0< if
-        dup >cla @ %trait = r> and >r
-    then
-    drop r> ;
-
-: valid-classifier? ( ? - n:res )
-    dup firstname here within  >r  \ in dictionary
-    r@ 0< if
-        dup -> magic @ MAGIC_CLASSIFIER = r> and >r
-    then
-    drop r> ;
-
-: valid-object? ( ? - n:res )
-    dup firstname here within  >r  \ in dictionary
-    r@ 0< if
-        dup >cla @ ( class ) valid-class? r> and >r
-    then
-    drop r> ;
-
 : copy ( srcobj destobj - destobj )
     dup dup >r sizeof move r> ;
-
-: is? ( object|class classifier - bool )
-    \ TODO: Optimize and put the runtime checks in optional validations.
-    dup valid-classifier? not abort" IS? : Invalid classifier."
-    over valid-object? not if 2drop 0 exit then
-    -> classifier# @ swap
-    dup >cla @ %class <> if >cla @ then -> id-table test-bit ;
 
 : can? ( object|class classifier|protocol-xt - bool )
     {: obj-or-class second-param | class-to-check :}
