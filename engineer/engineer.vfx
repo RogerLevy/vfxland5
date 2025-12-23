@@ -84,6 +84,7 @@ borrow nib2>> init-nib
     reset-system-classifiers
     ['] noop is boot
     ['] noop is onSwitchIn
+    'show off
     honing off ;
 
 redef : empty ( - )
