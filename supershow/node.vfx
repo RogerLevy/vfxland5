@@ -1,4 +1,5 @@
 REQUIRE %vfxland5%/forge/lib/dltree.vfx
+REQUIRE %vfxland5%/supershow/traits.vfx
 
 512 ?constant s/node
 1024 ?constant MAX_NODES
@@ -6,17 +7,20 @@ REQUIRE %vfxland5%/forge/lib/dltree.vfx
 class: %node
     s/node field-space
     is-a %dltree
+    is-a %poolable
     EC_MAX_SIZE nprop ec  template { ec clear-ec }
 class;
-
-0 %node :construct ( - )
-    ec ecp! ;
 
 \ Node pool
 
 MAX_NODES %node array nodes
-MAX_NODES %addr stack frees
-[: frees push ;] nodes each
+%node object free-nodes
+[: free-nodes push ;] nodes each
 
-: recycle ( node - )
-    dup remove  frees push ;
+0 %node :construct ( - )
+    ec ecp! ;
+
+%node >template { free-nodes pool ! }
+
+: recycle ( poolable - )
+    dup remove  dup >pool @ push ;

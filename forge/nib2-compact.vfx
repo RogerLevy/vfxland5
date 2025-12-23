@@ -130,7 +130,7 @@
     repeat
     class; ;
 
-\\
+((
 \ Test:
 
 trait: thinker trait;

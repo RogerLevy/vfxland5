@@ -26,3 +26,7 @@ trait: %dimensional
 
     :: dims ( - w h ) w 2@ ;
 trait;
+
+trait: %poolable
+    prop pool :ref %lifo
+trait;

@@ -127,7 +127,7 @@ continuation: who> ( - actor|0 ) ( - f )
     stg@ swap { stg!   me stg@ push   -1 rnd id !   en on   me init-actor } ;
 
 : one ( class - actor )
-    >r frees pop r> over construct dup stage-init ;
+    >r free-nodes pop r> over construct dup stage-init ;
     
 : stage ( <name> - ) ( - )
     %stage object does> stg! ;
