@@ -33,6 +33,7 @@ ec-cell ppeny \ fixed
 
 \ Position
 : at ( x y - ) >p ppeny! >p ppenx! ;
+: atp ( x. y. - ) ppeny! ppenx! ;
 : penx@ ( - x ) ppenx@ >i ;
 : peny@ ( - y ) ppeny@ >i ;
 : at@ ( - x y ) penx@ peny@ ;
