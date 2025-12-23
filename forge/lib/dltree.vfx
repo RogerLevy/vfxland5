@@ -12,8 +12,9 @@ trait: %dltree
 trait;
 
 : dlremove ( dltree -- )
-    dup -> parent @ dup 0= if  2drop  exit  then
-    locals| p n |
+    {: n | p :}
+    n -> parent @ to p
+    p -exit
     0 n -> parent !
     -1 p >item-count +! 
     p -> lowest @ p -> highest @ = if
