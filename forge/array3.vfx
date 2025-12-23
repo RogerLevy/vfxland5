@@ -36,7 +36,7 @@ require %idir%/datatypes.vfx
 
 trait: %iterable
     prop item-count :int <save
-    prop element-type :ref %class         \ Class of elements
+    prop item-type :ref %class         \ Class of elements
 
     :: el@ ( i - val ) stub ;
     :: el? ( i - ) stub ;
@@ -106,7 +106,7 @@ class: %array
     prop data :addr
 class;
 
-|| : object-array? ( - flag ) element-type @ -> is-datatype @ not ;
+|| : object-array? ( - flag ) item-type @ -> is-datatype @ not ;
 
 : array-index ( a array - n )
     { data @ - slot-size @ / } ;
@@ -130,23 +130,23 @@ private
 \ TODO: Handle embedded cstrings, bytes, halfwords, floats, and pairs
 : _@ ( a - val )
     object-array? ?exit  
-    element-type @ -> fetch-xt @ execute ;
+    item-type @ -> fetch-xt @ execute ;
 
 : _! ( val a - ) 
     object-array? abort" Can't overwrite embedded object arrays!"
-    element-type @ -> store-xt @ execute ;
+    item-type @ -> store-xt @ execute ;
 
 : _? ( a - )
     object-array? if .summary cr exit then
-    element-type @ -> print-xt @ execute ;
+    item-type @ -> print-xt @ execute ;
 
 : _+! ( a - )
     object-array? abort" Adding to object elements is not currently supported!"
-    element-type @ -> add-xt @ execute ;
+    item-type @ -> add-xt @ execute ;
 
 : _*! ( a - )
     object-array? abort" Adding to object elements is not currently supported!"
-    element-type @ -> mul-xt @ execute ;
+    item-type @ -> mul-xt @ execute ;
 
 \ ==============================================================================
 \ Public Element Access
@@ -172,15 +172,15 @@ public
 \ ==============================================================================
 
 2 %array :construct ( #slots element-class - )
-    element-type !
-    element-type @ sizeof slot-size !
+    item-type !
+    item-type @ sizeof slot-size !
     max-slots !
     max-slots @ item-count !
     slot-size @ 128 >= if pagealign else align then here data !   
     max-slots @ slot-size @ * allot&erase 
     object-array? if 
         item-count @ for
-            element-type @ i _slot scaffold
+            item-type @ i _slot scaffold
         loop
     then ;
 
@@ -209,7 +209,7 @@ redef : array ( #slots element-class <name> - )
     \ Resize array (copy existing data)
     dup max-slots @ = if drop exit then
     slot-size @ max-slots @ * >r   data @ >r
-    ( #slots ) element-type @ array:construct 
+    ( #slots ) item-type @ array:construct 
     r>` data @` slot-size @ max-slots @ * r> min` move ;
 
 \ ==============================================================================
@@ -256,8 +256,8 @@ class;
     0 item-count ! ;
 
 2 %stack :construct ( max-slots element-class - )
-    element-type !
-    element-type @ sizeof slot-size !
+    item-type !
+    item-type @ sizeof slot-size !
     max-slots !
     align here data !   max-slots @ slot-size @ * allot&erase ;
 
