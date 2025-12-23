@@ -45,7 +45,7 @@ include %idir%/../textmode/textmode-tools.vfx
     {: | fb[ 256 ] :}
     dup (word) fb[ place
     \ 13 -			\ NFA (count byte) is at least this far back
-    1024 for
+    500 for
         dup InForth? 0= if drop  fb[  unloop exit then
         dup name? if unloop exit then
         1-
@@ -60,7 +60,7 @@ include %idir%/../textmode/textmode-tools.vfx
     dup (word) fb[ place  0 fb[ count + c!
     unalign 
     13 -			\ NFA (count byte) is at least this far back
-    1024 for
+    500 for
         dup InForth? 0= if drop  fb[  unloop exit then
         dup name? if unloop exit then
         1-
