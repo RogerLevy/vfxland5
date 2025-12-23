@@ -32,6 +32,9 @@ aka >> rshift
 : h. ( n - ) (hword) type space ;
 : (word)  base @ >r decimal  0 <# #s #> r> base ! ;
 : #. ( n - ) (word) type space ;
+: ]#  ] postpone literal ;
+: ?literal  state @ if postpone literal then ;
+: valof  ' >body ?literal s" @" evaluate ; immediate
 
 : screate ( name len - ) ( - a )
     {: | name$[ 256 ] :} name$[ place name$[ $create ;
@@ -300,7 +303,6 @@ aka se" s\"        \ " \ syntax highlight guard
 ;
 
 : strin?  search nip nip ;    
-: ?literal  state @ if postpone literal then ;
 : .:  postpone (s") 0 parse $, postpone type postpone cr ; immediate
 
 : toggle dup @ 0= swap ! ;
