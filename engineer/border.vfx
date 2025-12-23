@@ -29,11 +29,11 @@
     cls
 
     tv-xy 2s>f`` tv-xy2 2s>f``
-        0.25e 0.25e 0.25e 1e al_draw_filled_rectangle
+        0.25e f>ds 0.25e f>ds 0.25e f>ds 1e f>ds```` al_draw_filled_rectangle
 
     6e f>ds >r
     border-xy 2s>f`` fs-w 1 + fs-h 1 + border-xy 2+ 2s>f``
-        0e 0e 0e 1e```` r>` al_draw_rectangle
+        0e f>ds 0e f>ds 0e f>ds 1e f>ds````  r>` al_draw_rectangle
     
     border-xy 2s>f`` z z 2s>f`` 0e` transform
     clip-screen ;

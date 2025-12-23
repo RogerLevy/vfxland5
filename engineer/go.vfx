@@ -22,7 +22,7 @@ redef : ticks  ( n - ms )
 \ Main Loop Support
 \ =============================================================================
 
-private
+public
 
 : poll ( - )
     poll-keyboard  
@@ -37,8 +37,6 @@ private
     update-delta update-delta ;
 
 : ?idle  debug @ if (EmptyIdle) then ;
-
-public
 
 : present  ?idle display al_flip_display spin ;
 
@@ -90,7 +88,7 @@ public
 
 || : pre ( - )
     >display 
-    0 #tib ! postpone \\ 
+    \ 0 #tib ! postpone \\ 
     update-delta update-delta 
     need-pump on 
     going on 
