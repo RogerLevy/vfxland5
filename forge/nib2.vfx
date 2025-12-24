@@ -361,6 +361,9 @@ ec-cell allocator  \ xt ( ... n - a ior )
 : in-dict ( - )
     ['] dict-allocator allocator! ;
 
+: in-heap ( - )
+    ['] allocate allocator! ;
+
 redef : make ( ... class - object )
     \ TODO: validate class
     dup -> instance-size @ allocator@ execute throw >r
@@ -644,8 +647,11 @@ create %protocol  %class dmake {
     then
     drop r> ;
 
+: valid-address?  0x00010000 0x80000000 within ;
+    
 : valid-object? ( ? - n:res )
-    dup firstname here within  >r  \ in dictionary
+    dup valid-address? >r
+    \ dup firstname here within  >r  \ in dictionary
     r@ 0< if
         dup >cla @ ( class ) valid-class? r> and >r
     then

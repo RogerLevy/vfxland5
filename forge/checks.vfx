@@ -25,8 +25,6 @@
 
 fast{
 
-: valid-address?  0x00010000 0x80000000 within ;
-
 crucial test: valid-address ( addr -- addr n:result )
     \ Validate address is non-null and in reasonable range
     dup valid-address? ; \ Below kernel space (Windows)
