@@ -13,7 +13,10 @@ variable zoom  2 zoom !
 0 value fullscreen?
 0 value display
 
-ALLEGRO_OPENGL ALLEGRO_PROGRAMMABLE_PIPELINE or
+0
+\ ALLEGRO_OPENGL or     \ slows down random bitmap drawing by a lot
+ALLEGRO_OPENGL_3_0 or
+ALLEGRO_PROGRAMMABLE_PIPELINE or
     value display-flags
 
 0 value builtin-font  \ builtin-font

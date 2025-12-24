@@ -914,6 +914,8 @@ extern "C" void al_wait_for_event( void * queue, void * event );
 
 1 1 lshift constant ALLEGRO_FULLSCREEN
 1 2 lshift constant ALLEGRO_OPENGL
+1 3 lshift constant ALLEGRO_DIRECT3D
+1 7 lshift constant ALLEGRO_OPENGL_3_0
 1 6 lshift constant ALLEGRO_GENERATE_EXPOSE_EVENTS
 1 9 lshift constant ALLEGRO_FULLSCREEN_WINDOW
 1 11 lshift constant ALLEGRO_PROGRAMMABLE_PIPELINE 
