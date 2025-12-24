@@ -26,6 +26,7 @@ include %idir%/window.vfx
 \ =============================================================================
 
 fload %idir%/../forge/lib/allegro5/graphics.vfx   \ Graphics functions
+fload %idir%/../forge/lib/allegro5/vga13h.vfx     \ VGA text support (don't remove!)
 fload %idir%/../forge/lib/allegro5/input.vfx      \ Input functions
 fload %idir%/border.vfx     \ TV border / scaling
 fload %idir%/go.vfx         \ Main Loop
@@ -126,6 +127,7 @@ previous
     init-home-path
     init-mersenne
     init-allegro
+    init-vga-font
     *display
     builtin-font fnt! 
     0d to ustime 
