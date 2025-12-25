@@ -105,11 +105,13 @@ ec-cell fnt
 \ Text rendering
 
 : mltext ( a len w - )
-    {: | zstr[ 4096 ] lh w z :}
-    over 0= if 3drop exit then 
-    >r zstr[ zplace  zstr[ r> s>f f>ds   
-    line-spacing @ s>f f>ds to lh to w to z 
-    fnt@  rgba@fds  at@f w lh 0 z al_draw_multiline_text ;
+    {: a len w | lh zstr :}
+    a len or -exit
+    a len *zbuf to zstr
+    w s>f f>ds to w
+    line-spacing @ s>f f>ds to lh 
+    fnt@  rgba@fds  at@f w lh 0 zstr al_draw_multiline_text 
+    zstr free throw ;
 
 : print ( a len - )
     winw penx@ - mltext ;
@@ -120,8 +122,14 @@ ec-cell fnt
     r> line-spacing ! ;
 
 : textw ( a n - n )
-    {: | zstr[ 4096 ] :}
-    zstr[ zplace  zstr[  fnt@  swap  al_get_text_width ;  
+    *zbuf >r  fnt@  r@  al_get_text_width  r> free throw ;  
+
+: textbox ( a n - x y w h )
+    {: | buf[ 16 ] :}
+    *zbuf >r
+    fnt@  r@  buf[ dup cell+ dup cell+ dup cell+ al_get_text_dimensions
+    r> free throw
+    buf[ @+ swap @+ swap @+ swap @ ;
 
 : glyph ( n - )
     >r  fnt@ rgba@fds at@f  r> al_draw_glyph ;
