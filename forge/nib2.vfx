@@ -904,16 +904,45 @@ create protocol-link 0 , 0 ,
 
 : implementing-protocol?  protocol-link @ 0<> ;
 
+|| 0 value the-protocol
+|| 0 value the-classifier
+
 redef : ; ( - )
+    {: | trait0 class0 protocol0 :}
     implementing-protocol? if
         protocol-link 2@ ! \ completed compilation so it's time to put the xt in the class
         protocol-link off 
+
+        the-classifier >cla @ %trait = if
+            the-protocol to protocol0
+            the-classifier to trait0
+
+            \ Propagate the protocol to dependents
+            trait0 -> dependents list-count for
+                list-next to class0
+                \ Only propagate if class doesn't have implementation from different source
+                protocol0 class0 supports-protocol? if
+                    protocol0 -> offset @ class0 + >origin @ trait0 = if
+                        \ Implementation from this trait - safe to overwrite
+                        trait0 protocol0 class0 apply-protocol
+                    then
+                    \ else: Implementation from different trait or class - don't overwrite
+                else
+                    \ Class doesn't support protocol yet - apply it
+                    \ class0 body>name protocol0 body>name f" Propagating protocol %s to dependent class %s" type cr
+                    trait0 protocol0 class0 apply-protocol
+                then
+            loop drop
+        then
+
     then 
     postpone ;
 ; immediate
 
 : implement-protocol ( protocol classifier - )
     {: protocol0 c | name[ 256 ] :} 
+    protocol0 to the-protocol
+    c to the-classifier
     protocol0 {
         my-name name[ place
         c body>name 
@@ -936,30 +965,14 @@ redef : ; ( - )
         me }
     then
     to protocol0
-    
+
     protocol0 trait0 supports-protocol? not if
         protocol0 trait0 add-protocol
     then
     
     \ Compile the default behavior in the trait
     protocol0 trait0 implement-protocol
-    
-    \ Propagate the protocol to dependents
-    trait0 -> dependents list-count for
-        list-next to class0
-        \ Only propagate if class doesn't have implementation from different source
-        protocol0 class0 supports-protocol? if
-            protocol0 -> offset @ class0 + >origin @ trait0 = if
-                \ Implementation from this trait - safe to overwrite
-                trait0 protocol0 class0 apply-protocol
-            then
-            \ else: Implementation from different trait or class - don't overwrite
-        else
-            \ Class doesn't support protocol yet - apply it
-            trait0 protocol0 class0 apply-protocol
-        then
-    loop drop
-    ;
+;
 
 : :: ( [classifier] <protocol> - )
     {: | protocol0 c :}
@@ -969,12 +982,12 @@ redef : ; ( - )
         exit
     then
     c >cla @ %class <> 
-        abort" :: : Invalid protocol implementation destination. (Must be a class.)"
+        abort" :: : Invalid protocol implementation destination. Must be a class."
     bl word find not 
-        abort" :: : Protocol not found. Note: Protocols can only be created on traits."
+        abort" :: : Protocol not found."
     >body to protocol0
     protocol0 >cla @ %protocol <> 
-        abort" :: : Word is not a protocol!"
+        abort" :: : Word not a protocol."
     protocol0 c supports-protocol? not 
         abort" :: : Tried to implement a protocol not supported by the class."
     protocol0 c implement-protocol ;
