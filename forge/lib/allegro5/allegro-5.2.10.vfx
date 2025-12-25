@@ -484,7 +484,7 @@ extern "C" bool al_get_sample_instance_playing( void * spl );
 \ extern "C" al_get_system_config( );
 \ extern "C" al_get_system_driver( );
 extern "C" void * al_get_target_bitmap( );
-\ extern "C" al_get_text_dimensions( );
+extern "C" void al_get_text_dimensions( void * font, void * text, void * bbx, void * bby, void * bbw, void * bbh );
 extern "C" int al_get_text_width( void * font, void * str );
 \ extern "C" al_get_thread_should_stop( );
 \ extern "C" al_get_time( );
