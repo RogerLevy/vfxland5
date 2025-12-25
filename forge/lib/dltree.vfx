@@ -9,6 +9,9 @@ trait: %dltree
     prop highest  :ref %dltree 
     prop prev     :ref %dltree  
     prop next     :ref %dltree
+
+    :: insert-under ( dltree - ) stub ; 
+    :: insert-over ( dltree - ) stub ; 
 trait;
 
 : dlremove ( dltree -- )
@@ -149,5 +152,9 @@ fast}
 %dltree :: vacate ( - ) me dlclear ;
 
 %dltree :: each ( xt - ) me dleach ;
+
+%dltree :: insert-under ( dltree - ) dlinsert-under ;
+%dltree :: insert-over ( dltree - ) dlinsert-over ;
+
 
 aka remove dlremove
