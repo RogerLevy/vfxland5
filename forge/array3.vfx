@@ -291,6 +291,27 @@ redef : stack ( max-slots element-class <name> - )
     \ Multiply element (type-smart)
     { _slot _*! } ;
 
+\ ==============================================================================
+\ Utility Operations
+\ ==============================================================================
+
+\ %iterable :: find-index ( xt - n | -1 ) ( a - bool )
+\     \ TODO: Search for element matching predicate
+\     stub ;
+
+%iterable :: contains? ( item - bool )
+    \ Check if array contains item
+    0 swap
+    [: udup = if -1 u+ enough then ;] me each 
+    drop ;
+
+%iterable :: indexof ( item - u|-1 )
+    \ Get index of item
+    0 swap
+    [: udup = if enough exit then 1 u+ ;] me each 
+    drop 
+    dup me #items = if drop -1 then ;
+
 ((
 \ ==============================================================================
 \ Array-Getset Macro
@@ -302,18 +323,6 @@ redef : stack ( max-slots element-class <name> - )
     \ TODO: Compile body twice:
     \       - Once with el@ appended (getter)
     \       - Once with EL! appended (setter)
-    stub ;
-
-\ ==============================================================================
-\ Utility Operations
-\ ==============================================================================
-
-%iterable :: find-index ( xt - n | -1 ) ( a - bool )
-    \ TODO: Search for element matching predicate
-    stub ;
-
-%iterable :: contains? ( item - bool )
-    \ TODO: Check if array contains value
     stub ;
 
 \ ==============================================================================
