@@ -54,6 +54,8 @@ private
     then
     ALLEGRO_EVENT_DISPLAY_RESIZE happened? if
         display al_acknowledge_resize
+        display al_get_display_width to winw
+        display al_get_display_height to winh
     then ;
 
 || : ?event ( - flag )

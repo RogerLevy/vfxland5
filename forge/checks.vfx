@@ -425,8 +425,8 @@ wrap-word find
 before allocate check-allocation-size
 wrap-word allocate
 
-before free check-allocated-address
-wrap-word free
+\ before free check-allocated-address
+\ wrap-word free
 
 before resize check-allocation-size
 wrap-word resize

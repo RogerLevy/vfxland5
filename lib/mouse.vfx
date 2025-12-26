@@ -6,7 +6,6 @@ create mickeyx 0 , 0 , here cell- constant mickeyy
 
 : mouse  mousex 2@ ;
 : mickey  mickeyx 2@ ;
-: mdelta  mouse mickey 2- ;
 : lb  ms0 ALLEGRO_MOUSE_STATE.buttons @ 1 and ;
 : rb  ms0 ALLEGRO_MOUSE_STATE.buttons @ 2 and 1 >> ;
 

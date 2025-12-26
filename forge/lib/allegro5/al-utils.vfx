@@ -17,7 +17,8 @@ variable zoom  2 zoom !
 \ ALLEGRO_OPENGL or     \ slows down random bitmap drawing by a lot
 ALLEGRO_OPENGL_3_0 or
 ALLEGRO_PROGRAMMABLE_PIPELINE or
-    value display-flags
+ALLEGRO_GENERATE_EXPOSE_EVENTS or
+value display-flags
 
 0 value builtin-font  \ builtin-font
 
@@ -105,8 +106,7 @@ extern BOOL SetThreadPriority( hthread, priority );
 ;
 
 : create-display
-    ALLEGRO_SINGLE_BUFFER  0  ALLEGRO_SUGGEST  al_set_new_display_option
-    \ ALLEGRO_SWAP_METHOD  1  ALLEGRO_SUGGEST  al_set_new_display_option
+    ALLEGRO_CAN_DRAW_INTO_BITMAP  1  ALLEGRO_SUGGEST  al_set_new_display_option
     ALLEGRO_VSYNC  1  ALLEGRO_SUGGEST  al_set_new_display_option
     
     fullscreen? if
@@ -116,10 +116,9 @@ extern BOOL SetThreadPriority( hthread, priority );
     then
     
     display-flags
-        fullscreen? if ALLEGRO_FULLSCREEN_WINDOW or then
-        
-        ALLEGRO_GENERATE_EXPOSE_EVENTS or
-        al_set_new_display_flags
+    debug @ if ALLEGRO_RESIZABLE or then
+    fullscreen? if ALLEGRO_FULLSCREEN_WINDOW or then
+    al_set_new_display_flags
     
     winw winh al_create_display to display
         
