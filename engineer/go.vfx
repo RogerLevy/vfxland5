@@ -38,7 +38,7 @@ public
 
 : ?idle  debug @ if (EmptyIdle) then ;
 
-: present  ?idle display al_flip_display spin ;
+: present  display al_flip_display ?idle spin ;
 
 \ =============================================================================
 \ Event handler

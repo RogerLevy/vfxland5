@@ -476,3 +476,25 @@ errdef err_bailed "Word bailed."
 
 ['] .engineer-prompt is .prompt 
 
+\ =============================================================================
+\ Bitfield
+\ =============================================================================
+
+: reset-bit ( bit# addr - )
+    over 3 rshift +      \ addr + bit#/8 = byte address
+    swap 7 and           \ bit# mod 8 = bit position
+    1 swap lshift invert
+    over c@ and swap c! ;
+
+redef : set-bit ( bit# addr - )
+    over 3 rshift +
+    swap 7 and
+    1 swap lshift
+    over c@ or swap c! ;
+
+: store-bit ( flag bit# addr - )
+    rot if set-bit else reset-bit then ;
+
+redef : test-bit ( bit# adr - b )
+    >r 8 /mod ( bit-ofs byte-ofs )
+    r> + c@ 1 rot lshift and 0<> ;

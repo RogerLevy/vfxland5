@@ -74,17 +74,6 @@ redef : -> ( object <name> - a )
 : >$ ( a len - $ )
     name$ place name$ ;
 
-redef : set-bit ( bit# addr - )
-    {: bit# addr | byte-ofs bit-ofs :}
-    bit# 8 / to byte-ofs
-    bit# 8 mod to bit-ofs
-    addr byte-ofs +
-    dup c@ 1 bit-ofs lshift or swap c! ;
-
-redef : test-bit ( bit# adr - b )
-    >r 8 /mod ( bit-ofs byte-ofs )
-    r> + c@ 1 rot lshift and 0<> ;
-
 : list-next ( node - next-node item )
     dup @ swap cell+ @ ;
 
