@@ -39,7 +39,7 @@ ec-cell ppeny \ fixed
 : at@ ( - x y ) penx@ peny@ ;
 : at@p ( - x. y. ) ppenx@ ppeny@ ;
 : at@f ( - f:x f:y ) ppenx@ p>f ppeny@ p>f ;
-: +at ( x y - ) at@ 2+ at ;
+: +at ( x y - ) 2>p at@p 2+ atp ;
 : <at  you { ppenx@ ppeny@ } ppeny! ppenx! ;  \ hard-inherit pen position
 
 \ =============================================================================
