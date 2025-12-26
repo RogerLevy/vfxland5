@@ -1,0 +1,66 @@
+REQUIRE %vfxland5%/forge/lib/dltree.vfx
+
+-warnings
+
+\ Test setup
+class: %tnode
+    is-a %dltree
+    prop val
+class;
+
+: tnode ( n -- node ) %tnode make swap over >val ! ;
+: .vals  [: -> val @ . ;] swap each ;
+
+0 tnode constant root
+1 tnode constant n1
+2 tnode constant n2
+3 tnode constant n3
+4 tnode constant n4
+
+n1 root push
+n2 root push
+n3 root push
+n4 root push
+
+cr ." === Setup ===" cr
+." Pushed n1 n2 n3 n4. Contents: " root .vals cr
+
+cr ." === Test peek ===" cr
+." peek val (expect 4): " root peek -> val @ . cr
+." #items after peek (expect 4): " root #items . cr
+
+cr ." === Test indexof ===" cr
+." n1 indexof (expect 0): " n1 root indexof . cr
+." n2 indexof (expect 1): " n2 root indexof . cr
+." n3 indexof (expect 2): " n3 root indexof . cr
+." n4 indexof (expect 3): " n4 root indexof . cr
+
+cr ." === Test removeat ===" cr
+." Removing index 2 (n3)..." cr
+2 root removeat
+." #items (expect 3): " root #items . cr
+." n3 parent (expect 0): " n3 -> parent @ . cr
+." Contents (expect 1 2 4): " root .vals cr
+
+cr ." === Test insertat (middle) ===" cr
+." Inserting n3 at index 1..." cr
+n3 1 root insertat
+." #items (expect 4): " root #items . cr
+." Contents (expect 1 3 2 4): " root .vals cr
+." n3 indexof (expect 1): " n3 root indexof . cr
+
+cr ." === Test insertat (end) ===" cr
+5 tnode constant n5
+." Inserting n5 at index 4 (end)..." cr
+n5 4 root insertat
+." Contents (expect 1 3 2 4 5): " root .vals cr
+." peek val (expect 5): " root peek -> val @ . cr
+
+cr ." === Test insertat (beginning) ===" cr
+6 tnode constant n6
+." Inserting n6 at index 0..." cr
+n6 0 root insertat
+." Contents (expect 6 1 3 2 4 5): " root .vals cr
+." n6 indexof (expect 0): " n6 root indexof . cr
+
+cr ." === All tests complete ===" cr

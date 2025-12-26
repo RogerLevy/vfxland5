@@ -22,5 +22,5 @@ MAX_NODES %node array nodes
 
 %node >template { free-nodes pool ! }
 
-: recycle ( poolable - )
-    dup remove  dup >pool @ push ;
+: recycle ( node - )
+    dup dlremove  dup >pool @ push ;

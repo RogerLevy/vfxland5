@@ -146,16 +146,36 @@ fast}
 %dltree :: el? ( i - val ) _nth-child .summary ;
 
 %dltree :: push ( item - ) me dlpush ; 
-%dltree :: pop ( - item ) highest @ dup 0= abort" DLTREE::POP : Underflow." dup dlremove ; 
+%dltree :: pop ( - item ) highest @ dup 0= abort" DLTREE:POP : Underflow." dup dlremove ; 
 %dltree :: unshift ( item - ) me dlunshift ; 
-%dltree :: shift ( - item ) lowest @ dup 0= abort" DLTREE::SHIFT : Underflow." dup dlremove ; 
+%dltree :: shift ( - item ) lowest @ dup 0= abort" DLTREE:SHIFT : Underflow." dup dlremove ; 
 %dltree :: vacate ( - ) me dlclear ;
 
 %dltree :: each ( xt - ) me dleach ;
 
-%dltree :: insert-under ( dltree - ) dlinsert-under ;
-%dltree :: insert-over ( dltree - ) dlinsert-over ;
+%dltree :: insert-under ( dltree - ) me dlinsert-under ;
+%dltree :: insert-over ( dltree - ) me dlinsert-over ;
+
+%dltree :: remove ( dltree - ) 
+    dup >parent @ me <> abort" DLTREE:REMOVE : Not my child."
+    dlremove ;
+
+%dltree :: removeat ( i - ) 
+    _nth-child dlremove ;
+
+%dltree :: insertat ( dltree i - ) 
+    dup me #items <> if
+        _nth-child insert-under
+    else
+        drop me push
+    then ;
+
+%dltree :: indexof ( dltree - )
+    dup >parent @ me <> abort" DLTREE:INDEXOF : Not my child."
+    0 swap begin >prev @ ?dup while 1 u+ repeat ;
+
+%dltree :: peek ( - item ) 
+    highest @ dup 0= abort" DLTREE::PEEK : Empty." ;
 
 
-aka remove dlremove
 aka #children #items

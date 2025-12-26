@@ -50,6 +50,17 @@ trait: %iterable
     \ :: .items ( - ) stub ;
 
     :: redim ( #items - ) stub ;
+    :: remove ( item iterable - ) stub ;
+    :: removeat ( index iterable - ) stub ;
+    :: insertat ( item index iterable - ) stub ;
+trait;
+
+trait: %lifo 
+    :: push ( item - ) stub ; 
+    :: pop ( - item ) stub ; 
+\    :: push-copy ( a - ) stub ; 
+    :: peek ( - item ) stub ;
+    :: vacate ( - ) stub ;
 trait;
 
 : #items ( iterable - n ) >item-count @ ;
@@ -59,6 +70,10 @@ trait;
 
 || variable enough-flag
 : enough  enough-flag on ;
+
+redef : add ( class - node )
+    me %lifo is? not abort" ADD : Current object is not a %lifo, aborting object creation." 
+    make dup me push ;
 
 \ ==============================================================================
 \ Iteration
@@ -101,6 +116,7 @@ trait;
 
 class: %array
     is-a %iterable
+    is-a %lifo
     prop max-slots :int <save
     prop slot-size :int <save
     prop data :addr
@@ -202,7 +218,7 @@ redef : array ( #slots element-class <name> - )
     %array object ;
 
 \ ==============================================================================
-\ Resize array
+\ Other operations
 \ ==============================================================================
 
 %array :: redim ( #slots - )
@@ -211,89 +227,6 @@ redef : array ( #slots element-class <name> - )
     slot-size @ max-slots @ * >r   data @ >r
     ( #slots ) item-type @ array:construct 
     r>` data @` slot-size @ max-slots @ * r> min` move ;
-
-\ ==============================================================================
-\ Stack
-\ ==============================================================================
-
-trait: %lifo 
-    :: push ( item - ) stub ; 
-    :: pop ( - item ) stub ; 
-\    :: push-copy ( a - ) stub ; 
-    :: peek ( - item ) stub ;
-    :: vacate ( - ) stub ;
-trait;
-
-redef : add ( class - node )
-    me %lifo is? not abort" ADD : Current object is not a %lifo, aborting object creation." 
-    make dup me push ;
-
-\ trait: %fifo
-\     :: enqueue ( item - ) stub ;
-\     :: dequeue ( - item ) stub ;
-\ \    :: enqueue-copy ( a - ) stub ;
-\     :: peek ( - item ) stub ;
-\ trait;
-
-class: %stack
-    %array derive
-    is-a %lifo
-class;
-
-%stack :: push ( val - )
-    item-count @ max-slots @ = abort" Stack overflow!"
-    1 item-count +!  me tail el! ;
-
-%stack :: pop ( - val )
-    item-count @ 0= abort" Stack underflow!"
-    me tail el@  -1 item-count +! ;
-
-%stack :: peek ( - val )
-    item-count @ 0= abort" Stack underflow!"
-    me tail el@ ;
-
-%stack :: vacate ( - )
-    0 item-count ! ;
-
-2 %stack :construct ( max-slots element-class - )
-    item-type !
-    item-type @ sizeof slot-size !
-    max-slots !
-    align here data !   max-slots @ slot-size @ * allot&erase ;
-
-redef : stack ( max-slots element-class <name> - )
-    \ Named stack allocation; atomic types only 
-    dup -> is-datatype @ not abort" Stacks can only contain atomic types! (e.g. %int)"
-    %stack object ;
-
-%stack :: redim ( #slots - )
-    dup max-slots @ = if drop exit then
-    slot-size @ max-slots @ * >r   data @ >r
-    ( #slots ) slot-size @ stack:construct 
-    r> data @   slot-size @ max-slots @ *   r> min   move 
-    item-count @ max-slots @ min item-count ! ;
-
-: stack{ ( element-class - )
-    %stack _array{ ;
-
-: stack} ( - array )
-    } here data @ - slot-size @ /   dup item-count ! max-slots !   me } ;
-
-\ ==============================================================================
-\ Convenience Words
-\ ==============================================================================
-
-: el+! ( val index array - )
-    \ Add to element (type-smart)
-    { _slot _+! } ;
-
-: el*! ( val index array - )
-    \ Multiply element (type-smart)
-    { _slot _*! } ;
-
-\ ==============================================================================
-\ Utility Operations
-\ ==============================================================================
 
 \ %iterable :: find-index ( xt - n | -1 ) ( a - bool )
 \     \ TODO: Search for element matching predicate
@@ -311,6 +244,99 @@ redef : stack ( max-slots element-class <name> - )
     [: udup = if enough exit then 1 u+ ;] me each 
     drop 
     dup me #items = if drop -1 then ;
+
+%array :: removeat ( index - )
+    slot-size @ *  data @ +              \ addr of item to remove
+    dup slot-size @ +                    \ addr of next item
+    swap                                 \ ( src dest )
+    item-count @ 1 - slot-size @ * data @ + over -  \ bytes to move
+    move
+    -1 item-count +! ;
+
+%array :: remove ( item - )
+    me indexof dup 0< if drop exit then  \ not found
+    me removeat ;
+
+%array :: insertat ( item index - )
+    {: item index :}
+    item-count @ max-slots @ = abort" Array full!"
+    index item-count @ > abort" Index out of bounds!"
+
+    index item-count @ < if
+        data @  index slot-size @ * +       \ src = &data[index]
+        dup slot-size @ +                   \ dest = &data[index+1]
+        item-count @ index - slot-size @ *  \ bytes = (count - index) * slot-size
+        move
+    then
+
+    item index slot-size @ * data @ + _!    
+    1 item-count +! ;
+
+%array :: push ( val - )
+    item-count @ max-slots @ = abort" Array overflow!"
+    1 item-count +!  me tail el! ;
+
+%array :: pop ( - val )
+    item-count @ 0= abort" Array underflow!"
+    me tail el@  -1 item-count +! ;
+
+%array :: peek ( - val )
+    item-count @ 0= abort" Empty array!"
+    me tail el@ ;
+
+%array :: vacate ( - )
+    0 item-count ! ;
+    
+\ ==============================================================================
+\ Stack
+\ ==============================================================================
+
+\ trait: %fifo
+\     :: enqueue ( item - ) stub ;
+\     :: dequeue ( - item ) stub ;
+\ \    :: enqueue-copy ( a - ) stub ;
+\     :: peek ( - item ) stub ;
+\ trait;
+
+class: %stack
+    %array derive
+class;
+
+2 %stack :construct ( max-slots element-class - )
+    \ dup -> is-datatype @ not abort" Stacks can only contain atomic types! (e.g. %int)"
+    item-type !
+    item-type @ sizeof slot-size !
+    max-slots !
+    align here data !   max-slots @ slot-size @ * allot&erase ;
+
+redef : stack ( max-slots element-class <name> - )
+    \ Named stack allocation
+    %stack object ;
+
+%stack :: redim ( #slots - )
+    dup max-slots @ = if drop exit then
+    slot-size @ max-slots @ * >r   data @ >r
+    ( #slots ) slot-size @ stack:construct 
+    r> data @   slot-size @ max-slots @ *   r> min   move 
+    item-count @ max-slots @ min item-count ! ;
+
+: stack{ ( max-items element-class - )
+    %stack make { dp @ >e  data @ dp !  you { ;
+
+: stack} ( - stack )
+    } here data @ - slot-size @ / item-count !   e> dp !   me } ;
+
+\ ==============================================================================
+\ Convenience Words
+\ ==============================================================================
+
+: el+! ( val index array - )
+    \ Add to element (type-smart)
+    { _slot _+! } ;
+
+: el*! ( val index array - )
+    \ Multiply element (type-smart)
+    { _slot _*! } ;
 
 ((
 \ ==============================================================================
@@ -342,3 +368,4 @@ redef : stack ( max-slots element-class <name> - )
 aka >el el@
 
 optimising off fast}
+
