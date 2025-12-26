@@ -29,3 +29,6 @@ create the-event /ALLEGRO_EVENT allot&erase
 : erase-kb  kbs0 al_clear_keyboard_state ;
 : restore-kb  kbs2 kbs0 /ALLEGRO_KEYBOARD_STATE move ;
 : -keys  reset-keyboard ;
+
+: al_set_key_down ( flag keycode state -- )
+    cell+ store-bit ;

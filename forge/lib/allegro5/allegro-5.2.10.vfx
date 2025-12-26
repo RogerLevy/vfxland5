@@ -910,7 +910,7 @@ extern "C" void al_use_transform( void * m );
 extern "C" void al_wait_for_event( void * queue, void * event );
 \ "
 
-256 constant /ALLEGRO_KEYBOARD_STATE
+1024 constant /ALLEGRO_KEYBOARD_STATE
 
 \ Display flags (bit order)
 1 0 lshift constant ALLEGRO_WINDOWED
