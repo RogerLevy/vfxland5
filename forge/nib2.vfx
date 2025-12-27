@@ -756,8 +756,7 @@ create %protocol  %class dmake {
         then
         trait0 protocol0 trait1 apply-protocol
     loop drop
-
-    
+  
     \ Merge properties
     trait0 -> property-list list-count for
         list-next
@@ -791,8 +790,6 @@ create %protocol  %class dmake {
         /object-base next-ofs !
         %object classifier -1 apply-trait 
     } ;
-
-
     
 : datatype ( size <name> - )
     class: classifier { is-datatype on  field-space } ;
@@ -829,15 +826,21 @@ create %protocol  %class dmake {
         trait0 classifier -1 inherit-trait
     then ;
 
-: works-with ( [class] <trait> - )
+: works-with ( <trait> - )
     \ Apply trait to class without adding to id-table
     \ Adds protocols and maps properties from the trait for transparent interoperability
     \ IS? will return 0
-    \ [class] only required if outside class definition
-    ' dup >body -> cla @ %trait <> if
-        >name count f" Identifier %s is not a trait." -1 -rot .abort
+    {: | trait0 :}
+    ' >body to trait0  
+    trait0 >cla @ %trait <> if
+        trait0 >name count f" Identifier %s is not a trait." -1 -rot .abort
     then
-    >body   classifier ?dup 0= if swap then 0 apply-trait ;
+    
+    classifier >cla @ %class = if
+        trait0 classifier 0 apply-trait 
+    else
+        trait0 classifier 0 inherit-trait
+    then ;
     
 : trait: ( <name> - )
     %trait already? if
