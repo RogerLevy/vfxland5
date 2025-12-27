@@ -25,7 +25,7 @@ class: %asset
         2dup lslurp data !  srcpath$ place ;
 
     : asset ( name len class - asset ) ( - asset )
-        >r screate r> make 
+        >r screate r> dmake 
         dup autoloads add-to ;
 
     : @data ( asset - a len )
