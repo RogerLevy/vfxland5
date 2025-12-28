@@ -29,6 +29,9 @@ magic-id MAGIC_CLASSIFIER CLAS
 aligned-page os
 variable osp   os osp ! \ object stack pointer
 
+\ : clear-object-stack
+\     os 256 erase ;
+
 \ ==============================================================================
 \ Low-level stuff
 \ ==============================================================================
@@ -220,8 +223,8 @@ variable tcsp  tcs tcsp !
 
 : e{ ( - )
     ecp@ 
-    tcsp @ dup _e{  tcs - 256 + 4095 and tcs + tcsp ! 
-    ecp@ s/ec move ;
+    tcsp @ ( ec ec ) dup _e{  tcs - 256 + 4095 and tcs + tcsp ! 
+    ( ec ) ecp@ s/ec move ;
 
 : e} ( - )
     _e}
@@ -229,6 +232,12 @@ variable tcsp  tcs tcsp !
 
 continuation: ec> ( - ) ( - )
     e{ execute e} ;
+
+: reset-ec-stack
+    dp @ 
+    tcs dp !
+    4096 256 / for sentinels, loop 
+    dp ! ;
 
 \ ==============================================================================
 \ Classes
@@ -1265,14 +1274,18 @@ variable errsp   estack errsp !
 
 class: %global class;  \ ECP = ROOTEC
 %global object global 
-global { global { global { global { global { global { global { global { 
-global { global { global { global { global { global { global { global { 
-global { global { global { global { global { global { global { global { 
-global { global { global { global { global { global { global { global { 
-global { global { global { global { global { global { global { global { 
-global { global { global { global { global { global { global { global { 
-global { global { global { global { global { global { global { global { 
-global { global { global { global { global { global { global { global { 
+
+: reset-object-stack
+    global { global { global { global { global { global { global { global { 
+    global { global { global { global { global { global { global { global { 
+    global { global { global { global { global { global { global { global { 
+    global { global { global { global { global { global { global { global { 
+    global { global { global { global { global { global { global { global { 
+    global { global { global { global { global { global { global { global { 
+    global { global { global { global { global { global { global { global { 
+    global { global { global { global { global { global { global { global { 
+;
+reset-object-stack
 global as in-dict
 
 \ ==============================================================================
@@ -1283,10 +1296,12 @@ global as in-dict
 || variable fresh-/static
 || variable fresh/ec
 
-: init-nib ( - )
+: init-nibs ( - )
     fresh-next-classifier# @ next-classifier# ! 
     fresh-/static @ to /static
+    reset-object-stack
     global me!  rootec ecp!  in-dict
+    reset-ec-stack
     fresh/ec @ to s/ec
     0 to classifier 
 ;
@@ -1298,7 +1313,6 @@ global as in-dict
 ;
 
 optimising off
-global me!
 
 
 ((

@@ -64,6 +64,14 @@ include %idir%/trampoline.vfx
     fresh-all-classifiers classifiers #max-classifiers cells move ;
 
 \ =============================================================================
+\ Reset Root EC
+\ =============================================================================
+
+create fresh-rootec  rootec EC_MAX_SIZE move,
+
+: reset-rootec  fresh-rootec rootec EC_MAX_SIZE move ;
+
+\ =============================================================================
 \ Entry Points  
 \ =============================================================================
 
@@ -76,13 +84,15 @@ include %idir%/trampoline.vfx
 || : vfxforth-entrypoint ( hinst hpinst lpcommand nshow -- res )
     [ ' EntryPoint >body @ compile, ] ;
 
-borrow nib2>> init-nib
+borrow nib2>> init-nibs
 
 || : empty-engineer ( - )
     reset-format-buffers
     reset-strout-buffers
-    init-nib
+    init-nibs
     reset-system-classifiers
+    reset-rootec
+    vga-8x8 fnt! 
     ['] noop is boot
     ['] noop is onSwitchIn
     'show off
@@ -128,9 +138,9 @@ previous
     init-home-path
     init-mersenne
     init-allegro
-    init-vga-font
     *display
-    builtin-font fnt! 
+    init-vga-font
+    \ builtin-font fnt! 
     0d to ustime 
 ;
 
@@ -207,7 +217,7 @@ include %vfxland5%/forge/lib/back.vfx           \ Backward compatibility shim
 public
 
 : engineer-entrypoint ( hinst hpinst lpcommand nshow -- res )
-    init-nib
+    init-nibs
     over zcount zcommand zplace
     vfxforth-entrypoint ;
 

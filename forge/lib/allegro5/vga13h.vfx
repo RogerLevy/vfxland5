@@ -267,7 +267,7 @@ vga13h pal!
     255 and pal@ el@ rgba8 ;
 
 \ VGA Font
-|| 0 value vga-8x8      \ allegro font handle
+0 value vga-8x8      \ allegro font handle
 || create vga.png  
 || here s" %idir%\vga2_8x8_allegro5.png" file,
 || here swap - constant /vga.png
