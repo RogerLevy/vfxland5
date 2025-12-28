@@ -225,8 +225,8 @@ When creating status.txt files, follow the format established in doc/engineer/st
 - (Windows path) C:\Users\roger\Dev\VfxForth\VfxBase
 - doc\claude\vfxman.txt
 
-## User Preferences
-
-- The user does not like "screen shake". Do not suggest it as a game enhancement or interpret anything referred to by the term "shake" or "shaking" as "screen shake" unless it is explicitly described as such.
-
-**IMPORTANT**: Omit the Claude attribution text from commit summaries and descriptions.
+### Protocol Calling Conventions
+```forth
+( [other params] object ) <protocol>   \ Late-bound dispatch
+class:protocol        \ Direct execution; assumes compatible object is already scoped
+```
