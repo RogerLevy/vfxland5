@@ -40,9 +40,10 @@
 
 : ?border
     identity 
-    fullscreen? if
+    fullscreen? user-zoom @ not and if
         refit border
     else
+        user-zoom @ ?dup if zoom ! then
         0e 0e z s>f fdup 0e transform
     then ; 
 
