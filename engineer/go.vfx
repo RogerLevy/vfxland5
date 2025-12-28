@@ -83,10 +83,15 @@ public
 
 public
 
-: process-input  poll pump system-controls ;
+: process-input  poll pump ;
 : draw-game  cls 0 0 at 'show @ ?execute ;
 : process-tick  e{ ['] draw-game draw-tv e} ;
-: frame  update-delta process-input process-tick present ;
+: frame  
+    update-delta 
+    process-input 
+    process-tick 
+    system-controls 
+    present ;
 
 || : pre ( - )
     >display 

@@ -2,13 +2,13 @@
 \ Cell-counted strings
 \ ------------------------------------------------------------------------------
 
-redef : lcount ( lstr - addr len )
+: lcount ( lstr - addr len )
     dup cell+ swap @ ;
 
 : lplace ( addr len lstr - )
     2dup ! cell+ swap move ;
 
-redef : lappend ( addr len lstr - )
+: lappend ( addr len lstr - )
     >r
     r@ cell+ r@ @ +  ( addr len dest )
     over >r swap move r>
@@ -20,7 +20,7 @@ redef : lappend ( addr len lstr - )
 : *lstring ( a len - lstr )
     here -rot  dup cell+ allot here lplace ;
 
-redef : l$,  ( a len - )
+: l$,  ( a len - )
     *lstring drop ;
 
 : l$@+ ( a - a' l$ len - )

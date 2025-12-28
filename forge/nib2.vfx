@@ -869,7 +869,7 @@ defer protocol-validations ( obj protocol - obj protocol )
             -1
             cla @ >name count
             r> body>name
-            f" DOES-PROTOCOL : Protocol %s not supported by %s!" .abort
+            f" DOES-PROTOCOL : Protocol %s not supported by %s" .abort
         then
         ( xt ) oexec
     } ;

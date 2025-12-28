@@ -86,7 +86,8 @@ borrow nib2>> init-nib
     ['] noop is boot
     ['] noop is onSwitchIn
     'show off
-    honing off ;
+    honing off 
+    identity ;
 
 redef : empty ( - )
     \ debug @ -exit
