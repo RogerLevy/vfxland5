@@ -24,12 +24,19 @@ ec-cell ppeny \ fixed
 1. 1. 1. 1. rgba
 
 : c>p  $ff and s>f 255e f/ f>p ;
+: p>c  257. p/ ;
 
 : rgba8 ( n - )  
     dup c>p >r 8 >>
     dup c>p >r 8 >> 
     dup c>p >r 8 >> 
     c>p r> r> r> rgba ;
+
+: rgba8@ ( - n )
+    ppenr@ p>c 24 <<
+    ppeng@ p>c 16 << or
+    ppenb@ p>c 8 << or
+    ppena@ p>c or ;
 
 \ Position
 : at ( x y - ) >p ppeny! >p ppenx! ;
