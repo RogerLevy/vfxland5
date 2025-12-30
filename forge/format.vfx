@@ -55,7 +55,7 @@
         '%' of s" %" add-field endof
         'c' of swap charbuf c! charbuf 1 add-field endof
         'n' of swap dup s>d dabs <# #s rot sign #> add-field endof
-        'p' of swap p>f -1 (f.) add-field endof
+        'p' of swap p>f (tf.) add-field endof
         'f' of -1 (f.) add-field endof
         'u' of swap 0 <# #s #> add-field endof
         's' of -rot add-field endof

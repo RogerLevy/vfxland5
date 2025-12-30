@@ -9,7 +9,7 @@
 : p* 65536 */ ;
 : p/ 65536 swap */ ;
 \ : ?1/-1 dup 0> if 1 else dup 0< if -1 then then ;
-: p. ( ?1/-1 + ) p>f 5 (f.) type space ;
+: p. ( ?1/-1 + ) p>f (tf.) type space ;
 : p? @ p. ;
 : pfloor $ffff0000 and ;
 : pcos p>f  deg>rad fcos f>p ;

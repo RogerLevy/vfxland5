@@ -36,6 +36,8 @@ aka >> rshift
 : ?literal  state @ if postpone literal then ;
 : valof  ' >body ?literal s" @" evaluate ; immediate
 : *zbuf  dup 1 + allocate throw >r r@ zplace r> ;
+: ftrunc4 ( f - f ) 10000e f* ftrunc 10000e f/ ;
+: (tf.) ftrunc4 -1 (f.) ;
 
 : screate ( name len - ) ( - a )
     {: | name$[ 256 ] :} name$[ place name$[ $create ;
