@@ -936,7 +936,35 @@ redef : ; ( - )
             loop drop
         then
 
-    then 
+        the-classifier >cla @ %class = if
+            the-protocol to protocol0
+            the-classifier to class0
+
+            \ Propagate the protocol to all subclasses
+            next-classifier# @ for
+                i cells classifiers + @ ?dup if
+                    dup >cla @ %class = if
+                        dup class0 <> if  \ skip self
+                            dup class0 is? if  \ is it a subclass of class0?
+                                protocol0 over supports-protocol? if
+                                    protocol0 -> offset @ over + >origin @ over <> if
+                                        \ Subclass doesn't have its own implementation
+                                        class0 protocol0 rot apply-protocol
+                                    else drop
+                                    then
+                                else drop
+                                then
+                            else drop
+                            then
+                        else drop
+                        then
+                    else drop
+                    then
+                then
+            loop
+        then
+
+    then
     postpone ;
 ; immediate
 
