@@ -177,5 +177,14 @@ fast}
 %dltree :: peek ( - item ) 
     highest @ dup 0= abort" DLTREE::PEEK : Empty." ;
 
-
 aka #children #items
+
+|| variable indent
+%dltree :: .items ( array - )
+    item-count @ for 
+        
+        cr indent @ spaces i me el? 
+        4 indent +!
+        i me el@ .items
+        -4 indent +!
+    loop ;
