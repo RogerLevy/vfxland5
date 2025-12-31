@@ -145,8 +145,8 @@ private
 
 create bgc 0.5e sf, 0.5e sf, 0.5e sf, 1e sf,
 
-redef : cls ( - )
-    bgc 4f@ al_clear_to_color ;
+\ redef : cls ( - )
+\     bgc 4f@ al_clear_to_color ;
 
 command : backdrop ( f-r f-g f-b f-a - )
     \ Set tool backdrop color.
