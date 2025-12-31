@@ -233,8 +233,8 @@ public
 \    init-ide
     \ zcommand zcount strip-exe interpret-string \ ide-interpret
     \ ?dup if .throw else ( go ) then 
-    >vfx 
     repl-go 
+    >vfx 
     backup remember ;
 
 ' engineer-entrypoint is EntryPoint
