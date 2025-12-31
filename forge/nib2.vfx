@@ -1161,7 +1161,8 @@ aka prop property
 2 constant TYPE_FIXED
 3 constant TYPE_FLOAT
 4 constant TYPE_CSTRING  \ note: meant for embedded cstring fields
-\ 5 constant TYPE_ARRAY
+5 constant TYPE_LSTRING  \ heap-allocated lstring pointer
+\ 6 constant TYPE_ARRAY
 
 100 constant TYPE_ADDR
 101 constant TYPE_XT
@@ -1201,6 +1202,10 @@ aka prop property
     ?no-property
     TYPE_CSTRING current-property classifier >property-type ! ;
 
+: :lstring ( - )
+    ?no-property
+    TYPE_LSTRING current-property classifier >property-type ! ;
+
 \ : <array ( - )
 \     ?no-property ?not-saved-supported
 \     TYPE_ARRAY current-property classifier >property-type ! ;
@@ -1233,6 +1238,7 @@ aka prop property
         TYPE_FIXED      of val-addr p? endof   
         TYPE_FLOAT      of val-addr sf@ f. endof   
         TYPE_CSTRING    of ." ($) " val-addr count type endof
+        TYPE_LSTRING    of ." (lstr) " val-addr @ ?dup if lcount type else ." <null>" then endof
         TYPE_ADDR       of ." (addr) " val-addr @ .data endof
         TYPE_XT         of ." (xt) " val-addr @ .ip endof
         TYPE_OBJREF     of ." (ref) " val-addr @ .object endof
