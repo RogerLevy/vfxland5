@@ -1,0 +1,116 @@
+\ =============================================================================
+\ REPL-Game Integration
+\ =============================================================================
+\ Allows the game to run while the VFX Forth IDE remains fully functional.
+\
+\ Usage:
+\   repl-go    - Start game running in REPL mode (IDE stays responsive)
+\   repl-stop  - Stop the game loop
+\   go         - Original blocking game loop (for release builds)
+\
+\ How it works:
+\   The VFX Forth REPL polls for input via richedit-key?, which calls BusyIdle
+\   on every iteration. By hooking our frame code into BusyIdle, the game
+\   renders frames while the IDE waits for input.
+\
+\ Note: In REPL mode, frame timing is different - we render whenever BusyIdle
+\ is called, with a minimum interval to avoid excessive CPU usage.
+\ =============================================================================
+
+\ Save original BusyIdle action
+\ Note: action-of is standard ANS Forth; alternatively use ['] BusyIdle >body @
+['] BusyIdle >body @ value 'original-busyidle
+
+\ Flag to control REPL game mode
+variable repl-game-active
+
+\ Frame timing for REPL mode (ms)
+16 value repl-frame-interval   \ ~60 FPS target
+variable last-repl-frame-time
+
+\ Get current time in ms (using ucounter which is always live)
+: repl-now ( - ms )
+    ucounter 1000 m/ ;
+
+\ Check if enough time has passed for next frame
+: repl-frame-due? ( - flag )
+    repl-now last-repl-frame-time @ -
+    dup 0< if drop true else repl-frame-interval >= then ;
+
+\ REPL-mode frame: like regular frame but without blocking spin
+: repl-mode-frame ( - )
+    update-delta
+    process-input
+    process-tick
+    system-controls
+    display al_flip_display
+    spin \ ?
+    ;
+
+\ Single frame execution for REPL mode (no throw, catches errors)
+: repl-frame ( - )
+    ['] repl-mode-frame catch ?dup if
+        \ Error occurred - stop the game and report
+        repl-game-active off
+        going @ if post then
+        cr ." Game error: " .throw cr
+    then
+    repl-now last-repl-frame-time ! ;
+
+\ BusyIdle hook that runs game frames
+: game-busyidle ( - )
+    repl-game-active @ if
+        going @ if
+            \ repl-frame-due? if
+                repl-frame
+            \ then
+        else
+            \ Game ended itself (e.g., via system-controls)
+            repl-game-active off
+            post
+            cr ." Game stopped." cr
+        then
+    then
+    'original-busyidle execute ;
+
+\ Install our hook (do this once at startup)
+: install-repl-game-hook ( - )
+    ['] game-busyidle is BusyIdle ;
+
+\ REPL-mode pre: like regular pre but doesn't start frame timer
+: repl-pre ( - )
+    \ >display
+    update-delta update-delta
+    need-pump on
+    going on
+    frame-timer al_resume_timer 
+    spin 
+    repl-now last-repl-frame-time ! ;
+
+\ Start game in REPL mode - IDE stays responsive
+: repl-go ( - )
+    going @ if
+        cr ." Game already running." cr exit
+    then
+    repl-pre                    \ Initialize game state (REPL version)
+    repl-game-active on
+    cr ." Game started (REPL mode). Type 'repl-stop' to stop." cr ;
+
+\ Stop game from REPL mode
+: repl-stop ( - )
+    repl-game-active @ 0= if
+        cr ." Game not running in REPL mode." cr exit
+    then
+    repl-game-active off
+    going @ if post then
+    cr ." Game stopped." cr ;
+
+\ Alternative: Toggle game on/off
+: repl-toggle ( - )
+    repl-game-active @ if repl-stop else repl-go then ;
+
+\ Initialize on load
+install-repl-game-hook
+cr ." REPL-Game integration loaded." cr
+cr ." Use 'repl-go' to start game with IDE responsive." cr
+
