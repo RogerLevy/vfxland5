@@ -16,6 +16,8 @@ private
     : ser-json-fixed   ( zname cjson - ) val-addr @ -rot add-fixed ;
     : ser-json-float   ( zname cjson - ) val-addr sf@ add-float ;
     : ser-json-cstring ( zname cjson - ) val-addr count >zpad -rot add-string ;
+    : ser-json-lstring ( zname cjson - )
+        val-addr @ ?dup if lcount else s" " then >zpad -rot add-string ;
 
     create ser-json-table
         ' ser-json-cell ,
@@ -23,6 +25,7 @@ private
         ' ser-json-fixed ,
         ' ser-json-float ,
         ' ser-json-cstring ,
+        ' ser-json-lstring ,
 
     : ser-property-json  ( cjson property - )
         dup >zname -rot
@@ -33,6 +36,11 @@ private
     : des-json-fixed   ( zname cjson - ) get-fixed val-addr ! ;
     : des-json-float   ( zname cjson - ) get-float val-addr sf! ;
     : des-json-cstring ( zname cjson - ) get-string val-addr place ;
+    : des-json-lstring ( zname cjson - )
+        get-string dup if
+            dup cell+ allocate throw dup val-addr !
+            lplace
+        else 2drop 0 val-addr ! then ;
 
     create des-json-table
         ' des-json-cell ,
@@ -40,6 +48,7 @@ private
         ' des-json-fixed ,
         ' des-json-float ,
         ' des-json-cstring ,
+        ' des-json-lstring ,
 
     : des-property-json  ( cjson property - )
         dup >zname -rot
