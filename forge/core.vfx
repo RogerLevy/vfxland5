@@ -37,7 +37,8 @@ aka >> rshift
 : valof  ' >body ?literal s" @" evaluate ; immediate
 : *zbuf  dup 1 + allocate throw >r r@ zplace r> ;
 : ftrunc4 ( f - f ) 10000e f* ftrunc 10000e f/ ;
-: (tf.) ftrunc4 -1 (f.) ;
+: fround4 ( f: n - f: n' ) 10000e f* fround 10000e f/ ;
+: (tf.) fround4 -1 (f.) ;
 
 : screate ( name len - ) ( - a )
     {: | name$[ 256 ] :} name$[ place name$[ $create ;
