@@ -32,8 +32,13 @@ class;
 \ =============================================================================
 
 trait: %animator
-    prop anm prop a.ts prop a.spd prop a.len
-    prop a.ofs prop a.done prop a.flp
+    prop anm :addr <readonly
+    prop a.ts :ref %tileset <readonly
+    prop a.spd :fixed
+    prop a.len
+    prop a.ofs :fixed
+    prop a.done 
+    prop a.flp
 trait;
 
 class: %actor

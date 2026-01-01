@@ -36,3 +36,8 @@ trait;
 trait: %poolable
     prop pool :ref %lifo
 trait;
+
+trait: %xy
+    prop x :fixed <save
+    prop y :fixed <save
+trait;
