@@ -35,8 +35,8 @@ require %idir%/datatypes.vfx
 \ it could be a cell, a pair, a float, a counted string, etc.
 
 trait: %iterable
-    prop item-count :int
-    prop item-type :ref %class         \ Class of elements
+    prop item-count :int <readonly
+    prop item-type :ref %class <readonly         \ Class of elements
 
     :: el@ ( i - val ) stub ;
     :: el? ( i - ) stub ;

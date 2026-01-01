@@ -394,6 +394,7 @@ create %property  %class dmake {
     cell field property-type
     cell field property-reftype
     cell field serialize-flag
+    cell field readonly-flag
 constant /property-metadata
 
 \ Property metadata accessor helpers
@@ -411,6 +412,9 @@ constant /property-metadata
 
 : >serialize-flag ( property class - field-addr )
     >property-metadata -> serialize-flag ;
+
+: >readonly-flag ( property class - field-addr )
+    >property-metadata -> readonly-flag ;
 
 create %static  %class dmake {
     %property -> instance-size @
@@ -1185,6 +1189,10 @@ aka prop property
 : <save ( - )
     ?no-property ?not-supported
     -1 current-property classifier >serialize-flag ! ;
+
+: <readonly ( - )
+    ?no-property
+    -1 current-property classifier >readonly-flag ! ;
 
 : :int ( - )
     ?no-property
