@@ -129,11 +129,11 @@ continuation: who> ( - actor|0 ) ( - f )
 : one ( class - actor )
     >r free-nodes pop r> over construct dup stage-init ;
     
-: stage ( <name> - ) ( - )
-    %stage object does> stg! ;
+\ : stage ( <name> - ) ( - )
+\     %stage object ; \ does> stg! ;
 
 \ Default stage
-stage actors  actors
+%stage object actors  actors stg!
 
 \ =============================================================================
 \ Script Classes
