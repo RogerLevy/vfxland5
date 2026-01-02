@@ -5,17 +5,19 @@
 variable winx
 variable winy
 
-: save-window-pos  
-    debug @ -exit
+: session-ini-path ( - a n )
+    s" %home%/session.ini" slashes expand ;
+
+: save-window-pos
     display winx winy al_get_window_position
-    s" session.ini" [SaveConfig
-        .sintvar winx
-        .sintvar winy
-    SaveConfig] ;
+    s{
+        .sintvar winx 
+        .sintvar winy 
+    s} session-ini-path write ;
 
 : restore-window-pos
     fullscreen? ?exit
-    s" session.ini" CfgIncluded 
+    session-ini-path CfgIncluded
     display winx @ winy @ 25 max al_set_window_position ;
 
 ['] save-window-pos AtExit
