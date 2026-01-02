@@ -5,6 +5,11 @@
 
 require %idir%/cjson2.vfx
 
+%object :: script@ ( - path len ) s" " ;
+%object :: forth@ ( - path len ) s" " ;
+%object :: on-serialize ( cjson - ) drop ;    \ override to add custom JSON data
+%object :: on-deserialize ( cjson - ) drop ;  \ override to read custom JSON data
+
 private
 
     also cjson2>>
@@ -83,7 +88,23 @@ borrow nib2>> prop+
     serjson> add-properties-to ;
 
 : *json ( object - cjson )
-    new-object dup >r add-properties-to r> ;
+    {: | cjson :}
+    {   
+        new-object to cjson
+        me cjson add-properties-to 
+
+        me script@ dup if
+            >zpad "script" cjson add-string
+        else 2drop then
+
+        me forth@ dup if
+            >zpad "forth" cjson add-string
+        else 2drop then
+
+        \ Call on-serialize hook for custom serialization
+        cjson me on-serialize 
+    cjson } 
+;
 
 : read-props ( cjson obj - )
     {: cjson obj | property0 :}
@@ -97,13 +118,11 @@ borrow nib2>> prop+
                 then
             then
         loop drop
+        cjson "script" ?j>z ?dup if zcount load-script then
         cjson "forth" ?j>z ?dup if zcount suppose then 
+        cjson me on-deserialize
     } ;
 
 : load-json ( path len - cjson )
     load-file udup parse-json swap free drop ;
 
-\ -- Code memoization ----------------------------------------------------------
-
-: memoize ( a len cjson - )
-    -rot >zpad "forth" rot add-string ;
