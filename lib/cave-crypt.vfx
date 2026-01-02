@@ -1,0 +1,12 @@
+debug @ [if] 
+: cave-crypt  2drop ;
+[else]
+: cave-crypt ( addr len - )  \ works for both encrypt and decrypt
+    {: | mba key :}
+    2dup 2 / + dup to mba c@ to key       
+    bounds ?do
+        i mba <> if     \ skip middle byte
+            i c@ key xor i c!
+        then
+    loop ;
+[then]
