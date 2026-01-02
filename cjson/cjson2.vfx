@@ -1,11 +1,11 @@
 library: cjson.dll
 
-vocabulary cjson>>
+vocabulary cjson2>>
 
 fast{ 
 private
 0
-    cell field next   \ &cjson
+    cell field jnext   \ &cjson
     cell field prev   \ &cjson
     cell field child  \ &cjson
     cell field jsontype   \ int
@@ -77,10 +77,10 @@ private
         -rot swap _cJSON_AddItemToObject@12 drop
     then ;
 
-: add-object ( cjson zkey|0 cjson - ) 
+: add-object ( cjson-object zkey|0 cjson-dest - ) 
     add-item ;
 
-: add-array ( cjson zkey|0 cjson - ) 
+: add-array ( cjson-array zkey|0 cjson-dest - ) 
     add-item ;
 
 : add-string ( zvalue zkey|0 cjson - ) 
@@ -154,7 +154,7 @@ borrow array3>> enough-flag
     for 
         2dup 2>r  swap execute 
         enough-flag @ if 2r> 2drop unloop exit then
-        2r> -> next @
+        2r> -> jnext @
     loop 2drop ;
 
 : jeach-fast ( ... jsrc xt - ... ) ( ... jitem - ... )
