@@ -54,6 +54,9 @@ private
         dup >zname -rot
         cla @ >property-type @ cells des-json-table + @ execute ;
 
+    : suppose ( a len - )
+        ['] evaluate catch ?dup if  .throw  2drop  then ;    
+
 public
 also cjson2>>
 borrow nib2>> prop+
@@ -94,8 +97,13 @@ borrow nib2>> prop+
                 then
             then
         loop drop
+        cjson "forth" ?j>z ?dup if zcount suppose then 
     } ;
 
 : load-json ( path len - cjson )
     load-file udup parse-json swap free drop ;
 
+\ -- Code memoization ----------------------------------------------------------
+
+: memoize ( a len cjson - )
+    -rot >zpad "forth" rot add-string ;
