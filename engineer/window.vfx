@@ -9,6 +9,7 @@ variable winy
     s" %home%/session.ini" slashes expand ;
 
 : save-window-pos
+    fullscreen? ?exit
     display winx winy al_get_window_position
     s{
         .sintvar winx 
