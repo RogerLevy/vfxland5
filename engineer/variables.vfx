@@ -1,6 +1,6 @@
 variable 'show ( - ) \ app logic and rendering
 ' noop 'show !
-defer desktop ( - ) \ default behavior of SHOW (restored on EMPTY)
+\ defer desktop ( - ) \ default behavior of SHOW (restored on EMPTY)
 defer boot ( - ) \ app startup code like loading assets
 defer onSwitchIn ( - ) \ Window gets focus
 variable going
