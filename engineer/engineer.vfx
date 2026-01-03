@@ -116,7 +116,8 @@ REDEF : MODULE  isolation @ if empty then require ;
 : cartridge ( - )
     \ Load user program
     empty page hold off
-    s" main.vfx" fileExist? if s" main.vfx" floaded then ;
+    s" main.vfx" fileExist? if s" main.vfx" floaded then 
+    repl-game-installed? if repl-go then ;
 
 also substitutions 
     aka vfxland5$ vfxland5

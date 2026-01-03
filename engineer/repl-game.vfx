@@ -72,6 +72,9 @@ variable repl-game-active
 : install-repl-game-hook ( - )
     ['] game-busyidle is BusyIdle ;
 
+: repl-game-installed? ( - flag )
+    ['] BusyIdle >body @ ['] game-busyidle = ;
+
 \ REPL-mode pre: like regular pre
 : repl-pre ( - )
     \ >display
@@ -97,12 +100,8 @@ variable repl-game-active
         cr ." Game not running in REPL mode." cr exit
     then
     repl-game-active off
-    going @ if post then
+    going @ if repl-post then
     cr ." Game stopped." cr ;
-
-\ Alternative: Toggle game on/off
-: repl-toggle ( - )
-    repl-game-active @ if repl-stop else repl-go then ;
 
 \ Initialize on load
 install-repl-game-hook
