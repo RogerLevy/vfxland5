@@ -30,14 +30,30 @@ variable next-bmp#  1 next-bmp# !
 : id>bmp ( bmpid - bitmap ) 
     bitmap@ ;
 
+: albmp>id ( albmp - bmpid | 0 )
+    \ Find bitmap ID given an Allegro bitmap pointer
+    \ Returns 0 if not found
+    next-bmp# @ 1 do
+        dup i bitmap@ -> albmp @ = if
+            drop i unloop exit
+        then
+    loop
+    drop 0 ;
+
+: bitmap-file ( bmpid - a n ) 
+    id>bmp -> srcpath$ count ;
+
+: bmp>parent ( bmpid - bmpid' )  
+    id>albmp al_get_parent_bitmap albmp>id ;
+
+: bmp>ts ( bmpid - name len )
+    bitmap-file -path -ext f" %s.ts" evaluate ;
+
 \ : ?nullbmp  dup 0= abort" BITMAP-FILE : Bitmap is null!" ;
 \ : ?subbmp  dup al_is_sub_bitmlap if al_get_parent_bitmap then ;
 
 : wrap-bitmap ( albmp - bitmap )
     %bitmap make { albmp ! me } ;
-
-: bitmap-file ( bmpid - a n ) 
-    id>bmp -> srcpath$ count ;
 
 : bmpwh ( bmpid - w h )
     id>albmp ?dup if dup albmpw swap albmph else 0 0 then ;
