@@ -17,11 +17,10 @@
 : lslurp ( fn-a fn-len - l$ )
     here -rot  2dup fsize , file, ;
 
-: *lstring ( a len - lstr )
-    here -rot  dup cell+ allot here lplace ;
-
 : l$,  ( a len - )
-    *lstring drop ;
+    \ here -rot  
+    dup cell+ allot here lplace 
+    ; \ drop ;
 
 : l$@+ ( a - a' l$ len - )
     lcount 2dup + -rot ;
