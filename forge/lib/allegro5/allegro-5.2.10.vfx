@@ -41,7 +41,7 @@ extern "C" void al_build_transform( void * trans, float x, float y,
 extern "C" void al_clear_keyboard_state( * state );
 extern "C" void al_clear_to_color( int float-r, int float-g, int float-b, int float-a );
 \ extern "C" al_clipboard_has_text( );
-\ extern "C" al_clone_bitmap( );
+extern "C" void * al_clone_bitmap( void * bitmap );
 \ extern "C" al_clone_menu( );
 \ extern "C" al_clone_menu_for_popup( );
 \ extern "C" al_clone_path( );
