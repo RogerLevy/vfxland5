@@ -78,7 +78,7 @@
 70 constant <BACKSLASH>  
 71  constant <BACKSLASH2> /* DirectInput calls this DIK_OEM_102: "< > | on UK/Germany keyboards" */
 72 constant <COMMA>      
-73 constant <FULLSTOP>   
+73 constant <FULLSTOP>
 74 constant <SLASH>      
 75 constant <SPACE>      
 
@@ -148,6 +148,8 @@ $08000 constant ALLEGRO_KEYMOD_ACCENT4
 <quote> constant <'>
 <backslash> constant <\>
 <comma> constant <,>
+<fullstop> constant <period>
+<period> constant <.>
 <fullstop> constant <>i
 <slash> constant </>
 <insert> constant <ins>
