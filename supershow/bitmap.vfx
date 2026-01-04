@@ -40,11 +40,12 @@ variable next-bmp#  1 next-bmp# !
     loop
     drop 0 ;
 
-: bitmap-file ( bmpid - a n ) 
-    id>bmp -> srcpath$ count ;
-
 : bmp>parent ( bmpid - bmpid' )  
     id>albmp al_get_parent_bitmap albmp>id ;
+
+: bitmap-file ( bmpid - a n ) 
+    dup id>albmp al_is_sub_bitmap if bmp>parent then
+    id>bmp -> srcpath$ count ;
 
 : bmp>ts ( bmpid - name len )
     bitmap-file -path -ext f" %s.ts" evaluate ;
