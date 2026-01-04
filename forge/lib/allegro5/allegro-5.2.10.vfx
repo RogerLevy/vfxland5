@@ -319,7 +319,7 @@ extern "C" int al_get_bitmap_width( void * bmp );
 \ extern "C" al_get_bitmap_x( );
 \ extern "C" al_get_bitmap_y( );
 \ extern "C" al_get_blend_color( );
-\ extern "C" al_get_blender( );
+extern "C" void al_get_blender(int * op, int * src, int * dst);
 \ extern "C" al_get_channel_count( );
 \ extern "C" al_get_clipboard_text( );
 extern "C" void al_get_clipping_rectangle( void * int-x, void * int-y, void * int-w, void * int-h );
