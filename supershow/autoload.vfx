@@ -17,12 +17,14 @@ create autoloads /list allot&erase
         list-next on-startup
     loop drop ;
 
+: >autoload-path  expand >abspath ;
+
 [defined] %asset [if]
 class: %asset
     prop data 
 
     : embed ( fp len - )
-        2dup lslurp data !  srcpath$ place ;
+        2dup lslurp data !  >autoload-path srcpath$ place ;
 
     : asset ( name len class - asset ) ( - asset )
         >r screate r> dmake 
@@ -46,7 +48,9 @@ class: %bitmap
         -memfile ;
 
     redef : bitmap ( <path> - ) ( - bmpid )
-        bl parse 2dup -path sfind nip if 2drop exit then
+        bl parse 
+        2dup file-exists? not abort" File not found"
+        2dup -path sfind nip if 2drop exit then
         2dup -path %bitmap asset does-bitmap { 
             ( fp len ) embed
             _load-albmp 
@@ -65,7 +69,7 @@ class: %tileset
 
     : tileset-from ( bmpid tilew tileh <name> - ) ( - tileset )
         bl parse 2dup sfind nip if 2drop 2drop drop exit then
-         %tileset asset {
+        %tileset asset {
             tw 2! bmp !
             _slice-tileset
         } ;
@@ -96,7 +100,9 @@ class: %sample
 
     : sample ( <path> - ) ( - )
         \ oggs only for now
-        bl parse 2dup -path sfind nip if 2drop exit then
+        bl parse 
+        2dup file-exists? not abort" File not found"
+        2dup -path sfind nip if 2drop exit then
         2dup -path -ext f" *%s*" %sample asset does-sample {
             2dup '.' ending -1 /string ident place 
             ( fp len ) embed
