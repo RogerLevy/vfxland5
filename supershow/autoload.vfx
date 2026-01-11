@@ -46,8 +46,8 @@ class: %bitmap
         -memfile ;
 
     redef : bitmap ( <path> - ) ( - bmpid )
-        bl parse 2dup 
-        -path %bitmap asset does-bitmap { 
+        bl parse 2dup -path sfind nip if 2drop exit then
+        2dup -path %bitmap asset does-bitmap { 
             ( fp len ) embed
             _load-albmp 
             me add-bitmap id !
@@ -64,7 +64,8 @@ class: %tileset
     is-a %autoload
 
     : tileset-from ( bmpid tilew tileh <name> - ) ( - tileset )
-        bl parse %tileset asset {
+        bl parse 2dup sfind nip if 2drop 2drop drop exit then
+         %tileset asset {
             tw 2! bmp !
             _slice-tileset
         } ;
@@ -95,8 +96,8 @@ class: %sample
 
     : sample ( <path> - ) ( - )
         \ oggs only for now
-        bl parse 2dup 
-        -path -ext f" *%s*" %sample asset does-sample {
+        bl parse 2dup -path sfind nip if 2drop exit then
+        2dup -path -ext f" *%s*" %sample asset does-sample {
             2dup '.' ending -1 /string ident place 
             ( fp len ) embed
             _load-alsmp
