@@ -42,7 +42,9 @@
       "Bash(apt search:*)",
       "WebFetch(domain:docs.anthropic.com)",
       "WebSearch",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "WebFetch(domain:www.forth.com)",
+      "Bash(sfk:*)"
     ],
     "deny": []
   }

@@ -167,12 +167,16 @@ borrow array3>> enough-flag
 
 : parse-json ( a len - cjson ) _cJSON_ParseWithLength@8 ;
 
+: save-json ( json path len - )
+    {: json path len :}
+    json serialize-cjson 
+        udup path len write 
+        cjson-free
+    json destroy-json ;
+
 || 0 value path 0 value len 0 value xt 0 value cjson
 continuation: serjson> ( path len [xt] - ) ( cjson - ) 
     to xt to len to path
     new-object to cjson
     cjson xt ?execute 
-    cjson serialize-cjson 
-        udup path len write 
-        cjson-free
-    cjson destroy-json ;
+    cjson path len save-json ;
