@@ -82,3 +82,17 @@ create temp-path-buf$ 256 allot
 : .sources   
     cr cr ." Source Files in Current Build:"
     ['] (.source) ['] SourceFiles >body @ WalkWordList ;
+
+library: shlwapi.dll
+extern bool PathRelativePathTo( void * pszPath, void * pszFrom, int dwAttrFrom, void * pszTo, int dwAttrTo );
+
+create zfrom[ 1024 allot
+create zto[ 1024 allot  
+create zbuf[ 1024 allot
+
+: >relpath ( frompath len topath len - path len )
+    {: frompath fromlen topath tolen :}
+    frompath fromlen >abspath zfrom[ zplace
+    topath tolen >abspath zto[ zplace
+    zbuf[ zfrom[ FILE_ATTRIBUTE_DIRECTORY  zto[ FILE_ATTRIBUTE_NORMAL  PathRelativePathTo drop
+    zbuf[ zcount ;
