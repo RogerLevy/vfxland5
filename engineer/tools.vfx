@@ -64,7 +64,7 @@ pop-order
     project$ count $cwd
     honing off
     cartridge
-    ; \ repl on ;
+    repl-game-active @ if >display >vfx then ;
 
 \ : ?reload ( - )
 \     honing @ 0<> reload-shift? not and if
