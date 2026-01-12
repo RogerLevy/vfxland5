@@ -162,7 +162,7 @@ extern BOOL SetThreadPriority( hthread, priority );
     ms0 ms1 /ALLEGRO_MOUSE_STATE move
     ms0 al_get_mouse_state ;
 
-: file-dialog  ( zpath ztitle zformats - a n ) 
+: file-dialog  ( zpath ztitle zformats mode - path len | 0 ) 
     al_create_native_file_dialog >r  
     display r@ al_show_native_file_dialog drop
     r@ al_get_native_file_dialog_count if
