@@ -111,6 +111,7 @@ public
 
 : go ( - ) 
     going @ ?exit pre 
+    premul-mode
     begin ['] frame catch ?dup until 
     post throw ;
 

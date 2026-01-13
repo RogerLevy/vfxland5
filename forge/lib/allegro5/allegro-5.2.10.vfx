@@ -477,7 +477,7 @@ extern "C" bool al_get_sample_instance_playing( void * spl );
 \ extern "C" al_get_sample_instance_speed( );
 \ extern "C" al_get_sample_instance_time( );
 \ extern "C" al_get_sample_length( );
-\ extern "C" al_get_separate_blender( );
+extern "C" void al_get_separate_blender(int *op, int *src, int *dst, int *alpha_op, int *alpha_src, int *alpha_dst);
 \ extern "C" al_get_shader_log( );
 \ extern "C" al_get_shader_platform( );
 \ extern "C" al_get_standard_path( );
@@ -766,7 +766,7 @@ extern "C" void al_set_new_display_option( int option, int value, int importance
 \ extern "C" al_set_sample_instance_playmode( );
 \ extern "C" al_set_sample_instance_position( );
 \ extern "C" al_set_sample_instance_speed( );
-\ extern "C" al_set_separate_blender( );
+extern "C" void al_set_separate_blender(int op, int src, int dst, int alpha_op, int alpha_src, int alpha_dst);
 \ extern "C" al_set_shader_bool( );
 \ extern "C" al_set_shader_float( );
 \ extern "C" al_set_shader_float_vector( );

@@ -125,7 +125,7 @@ extern BOOL SetThreadPriority( hthread, priority );
     queue  display       al_get_display_event_source  al_register_event_source
     queue                al_get_mouse_event_source    al_register_event_source
 
-    ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender
+    \ ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA al_set_blender
 
     reset-keyboard  \ depends on queue
     +audio
