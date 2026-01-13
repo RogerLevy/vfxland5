@@ -704,7 +704,7 @@ extern "C" int al_set_audio_stream_playmode( void * stream, int mode );
 \ extern "C" al_set_blend_color( );
 extern "C" void al_set_blender( int op, int src, int dst );
 \ extern "C" al_set_clipboard_text( );
-extern "C" void al_set_clipping_rectangle( int x1, int y1, int x2, int y2 );
+extern "C" void al_set_clipping_rectangle( int x1, int y1, int w, int h );
 \ extern "C" al_set_config_value( );
 \ extern "C" al_set_current_opengl_context( );
 \ extern "C" al_set_d3d_device_release_callback( );
