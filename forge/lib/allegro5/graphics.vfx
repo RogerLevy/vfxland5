@@ -145,9 +145,3 @@ ec-cell fnt
 
 : glyph ( n - )
     >r  fnt@ rgba@fds at@f  r> al_draw_glyph ;
-
-: get-blender  0 0 0 0 0 0 sp@ 5 cells + dup cell- dup cell- dup cell- dup cell- dup cell- al_get_separate_blender ;
-: set-blender  al_set_separate_blender ;
-: replace-mode  ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_ZERO   ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_ZERO set-blender ;
-: premul-mode  ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_INVERSE_ALPHA   ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_INVERSE_ALPHA set-blender ;
-: alpha-mode  ALLEGRO_ADD ALLEGRO_ALPHA ALLEGRO_INVERSE_ALPHA   ALLEGRO_ADD ALLEGRO_ONE ALLEGRO_INVERSE_ALPHA set-blender ;
