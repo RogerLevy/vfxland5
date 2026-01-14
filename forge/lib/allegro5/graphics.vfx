@@ -23,8 +23,8 @@ ec-cell ppeny \ fixed
 
 1. 1. 1. 1. rgba
 
-: c>p  $ff and s>f 255e f/ f>p ;
-: p>c  257. p/ ;
+: c>p  $ff and >p 0.5 + 255 / ; 
+: p>c  255 * 0.5 + >i ;
 
 : rgba8 ( n - )  
     dup c>p >r 8 >>
