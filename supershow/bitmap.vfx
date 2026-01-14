@@ -11,7 +11,7 @@ class: %bitmap
     prop albmp
 class;
 
-|| %bitmap object dummy.bmp
+%bitmap object dummy.bmp
 || : dummies,  #bitmaps for dummy.bmp , loop ;
 
 create bitmaps %addr array{ dummies, array} drop
