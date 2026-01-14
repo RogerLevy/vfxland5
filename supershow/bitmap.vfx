@@ -7,8 +7,10 @@ require %idir%/asset.vfx
 
 class: %bitmap
     %asset derive
+    is-a %saveable
     prop id 
     prop albmp
+    prop touched
 class;
 
 %bitmap object dummy.bmp
@@ -78,6 +80,17 @@ variable next-bmp#  1 next-bmp# !
 : cput ( bmpid - ) 
     \ draw sprite with center as the origin
     dup dup bmpwh -2 -2 2/ +at put bmpwh 2 2 2/ +at ;
+
+%bitmap :: save 
+    touched @ -exit
+    touched off
+    id @ bitmap-file expand >zpad   id @ ?bmp>parent id>albmp al_save_bitmap 
+        0= abort" Error saving bitmap" 
+    id @ bitmap-file f" Saved bitmap to %s" type cr ;
+
+: save-bitmaps
+    ['] save bitmaps each ;
+
 
 \ =============================================================================
 \ Backward compatibility

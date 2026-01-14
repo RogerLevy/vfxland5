@@ -12,6 +12,11 @@ trait: %unloadable
     :: unload ( - ) ;
 trait;
 
+trait: %saveable
+    redef :: save ( - ) stub ;
+    :: saveas ( path len ) stub ;
+trait;
+
 trait: %usable
     :: use ( - ) ;
 trait;
