@@ -90,3 +90,18 @@
 ;
 
 ' rec-fixed forth-recognizer +stack
+
+: _p.s
+    depth 8 min | d |
+    d 0< -4 ?throw
+    3 push-attribute
+    d if ."     DS( " depth . ." ):[ " else ."     DS:[ " then
+    d if
+        d 0 ?do d 1 - i - pick p. loop 
+    else
+        ." Empty! "
+    then
+    ." ] "
+    pop-attribute ;
+
+: p.s  _p.s cr ;

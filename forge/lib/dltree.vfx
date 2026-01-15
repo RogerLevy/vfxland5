@@ -132,7 +132,8 @@ private
 
 public
 
-: descendant? ( dltree1 dltree2 - flag )
+: descendant? ( dltree1 dltree2 - flag )  
+    \ Check if dltree1 is a child of dltree2
     swap {
         begin parent @ dup while
             over = if   } drop -1   exit then
@@ -140,7 +141,6 @@ public
         repeat nip ( 0 )
     } ;
 fast}
-
 
 %dltree :: el@ ( i - val ) _nth-child ;
 %dltree :: el? ( i - val ) _nth-child .summary ;
