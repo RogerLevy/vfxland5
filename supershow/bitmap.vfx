@@ -24,7 +24,10 @@ create bitmaps %addr array{ dummies, array} drop
 variable next-bmp#  1 next-bmp# !
 
 : alloc-bmp# ( - bmpid ) next-bmp# @   1 next-bmp# +! ;
-: add-bitmap ( bitmap - bmpid ) alloc-bmp# dup >r bitmap! r> ;
+: add-bitmap ( bitmap - bmpid ) 
+    alloc-bmp# >r 
+    r@ over >id !
+    r@ bitmap! r> ;
 
 : id>albmp ( bmpid - albmp ) 
     bitmap@ -> albmp @ ;
@@ -81,15 +84,27 @@ variable next-bmp#  1 next-bmp# !
     \ draw sprite with center as the origin
     dup dup bmpwh -2 -2 2/ +at put bmpwh 2 2 2/ +at ;
 
-%bitmap :: save 
+%bitmap :: save
     touched @ -exit
+    id @ id>albmp 0= ?exit  \ Skip if no valid Allegro bitmap
+    id @ is-subbmp? if
+        \ For sub-bitmaps, touch parent and exit
+        touched off
+        id @ bmp>parent ?dup if
+            id>bmp >touched on
+        then
+        exit
+    then
+    \ Normal bitmap - save it
     touched off
-    id @ bitmap-file expand >zpad   id @ ?bmp>parent id>albmp al_save_bitmap 
-        0= abort" Error saving bitmap" 
+    id @ bitmap-file expand >zpad   id @ id>albmp al_save_bitmap
+        0= abort" Error saving bitmap"
     id @ bitmap-file f" Saved bitmap to %s" type cr ;
 
 : save-bitmaps
-    ['] save bitmaps each ;
+    \ Do 2 passes - allows touched sub-bitmaps to touch
+    \ their parent bitmaps which are then saved once in the second pass
+    2 for ['] save bitmaps each loop ;
 
 
 \ =============================================================================
