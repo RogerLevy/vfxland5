@@ -49,7 +49,7 @@ variable next-bmp#  1 next-bmp# !
     id>albmp al_get_parent_bitmap albmp>id ;
 
 : is-subbmp? ( bmpid - flag )
-    id>albmp al_is_sub_bitmap 0<> ;
+    id>albmp dup -exit al_is_sub_bitmap 0<> ;
 
 : ?bmp>parent ( bmpid - bmpid|bmpid' )
     dup is-subbmp? if bmp>parent then ;
@@ -57,7 +57,7 @@ variable next-bmp#  1 next-bmp# !
 : bitmap-file ( bmpid - a n ) 
     ?bmp>parent id>bmp -> srcpath$ count ;
 
-: bmp>ts ( bmpid - name len )
+: bmp>ts$ ( bmpid - name len )
     bitmap-file -path -ext f" %s.ts" evaluate ;
 
 \ : ?nullbmp  dup 0= abort" BITMAP-FILE : Bitmap is null!" ;
