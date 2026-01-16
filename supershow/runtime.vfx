@@ -1,4 +1,4 @@
-REQUIRE %idir%/crt.vfx
+\ REQUIRE %idir%/crt.vfx
 REQUIRE %idir%/autoload.vfx
 REQUIRE %idir%/sprites.vfx
 
