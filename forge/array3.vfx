@@ -71,9 +71,13 @@ trait;
 || variable enough-flag
 : enough  enough-flag on ;
 
-redef : add ( class - node )
+
+: add ( node - node )
+    dup me push ;
+
+: *add ( class - node )
     me %lifo is? not abort" ADD : Current object is not a %lifo, aborting object creation." 
-    make dup me push ;
+    make add ;
 
 \ ==============================================================================
 \ Iteration
