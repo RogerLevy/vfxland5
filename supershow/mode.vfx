@@ -16,14 +16,19 @@ variable catchup
     gamemode @ -> drw @ ?execute ;
 
 : supershow ( - )
-    catchup @ if 
-        catchup off  
-        process-work update-delta process-input 
-    then
-    [: process-work process-show ;] time-xt n>f 
-    1e tps f/ 1000000e f* f>= if \ frame took more than a system tick
-        1 catchup ! \ process the game logic an extra time after presenting
-    then ;
+    gamemode @ >r default-mode gamemode ! 
+    [:
+        catchup @ if 
+            catchup off  
+            process-work update-delta process-input 
+        then
+        [: process-work process-show ;] time-xt n>f 
+        1e tps f/ 1000000e f* f>= if \ frame took more than a system tick
+            1 catchup ! \ process the game logic an extra time after presenting
+        then 
+    ;] catch
+    r> gamemode ! 
+    throw ;
 
 \ If called in the same function, call in this order: show> then work>
 \ Otherwise you'll get visual glitches.
