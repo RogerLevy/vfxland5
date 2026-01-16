@@ -186,7 +186,7 @@ then
 ```forth
 obj >field-name @          \ for single access / address calculation
 obj 's field-name @        \ old single access / address calculation, being phased out
-[[ field-name @ ]]         \ for scoped access
+{ field-name @ }         \ for scoped access
 ```
 
 ###  Validation Policy

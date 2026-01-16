@@ -5,7 +5,7 @@ Nib 2.0 Protocol Calling Conventions
 
 Protocols automatically receive the target object as an implicit first parameter that is NOT shown in their stack diagrams. This design choice was made to:
 
-1. **Avoid scope leak** - Eliminates need for `[[ protocol-call ]]` everywhere
+1. **Avoid scope leak** - Eliminates need for `{ protocol-call } ` everywhere
 2. **Reduce method nesting** - Prevents deeply nested scope blocks
 3. **Clean calling syntax** - Protocols act as true object methods
 
@@ -30,8 +30,8 @@ s" https://api.example.com" board init-url     \ Correct
 board fetch-data dup 0= if ...                \ Correct
 
 \ WRONG - don't do this:
-board [[ s" https://api.example.com" init-url ]]  \ Scope leak!
-[[ fetch-data ]] dup 0= if ...                    \ Unnecessary nesting!
+board { s" https://api.example.com" init-url }  \ Scope leak!
+{ fetch-data } dup 0= if ...                    \ Unnecessary nesting!
 ```
 
 ## Comparison with Other Languages
@@ -49,7 +49,7 @@ This is similar to `self`/`this` in other OOP languages - the object context is 
 ### Inner Protocols  
 - **Syntax**: `inner-protocol: name ( params - result )`
 - **Takes**: NO implicit object (works within object scope)
-- **Usage**: `object [[ params inner-protocol-name ]]`
+- **Usage**: `object { params inner-protocol-name } `
 - **Purpose**: Factored internal logic, readable scoped operations
 
 ### Functions
@@ -78,7 +78,7 @@ trait;
 
 \ Usage:
 board fetch-data                      \ Standard protocol
-board [[ validate-connection ]]       \ Inner protocol  
+board { validate-connection }       \ Inner protocol  
 data board process-function           \ Function
 ```
 

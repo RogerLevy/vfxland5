@@ -21,7 +21,7 @@
 
 ### 3. Performance Optimization
 - **Initial Problem:** 12x slowdown with validations enabled (120μs → 1.44ms frame time)
-- **Specific Issue:** Adding object validation to `[[` caused additional 4x slowdown
+- **Specific Issue:** Adding object validation to `{` caused additional 4x slowdown
 - **Solution:** Simplified from array-based multiple validations to single pre/post validation system
 - **Final Result:** 2.5x improvement achieved (750μs → 300μs frame time) with validations enabled
 

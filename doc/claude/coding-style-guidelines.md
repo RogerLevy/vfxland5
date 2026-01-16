@@ -14,7 +14,7 @@ Complicated functions must use the vertical format and locals, using the {: <par
 Typical Multi-line Word Example:
 ```forth
 : word ( a b -- n )
-    {: a b | v :}  \ Only one locals declaration pattern allowed, at the top of the word definition.
+    {: a b | v :} \ Only one locals declaration pattern allowed, at the top of the word definition.
     123 to v     \ initialize local variable `v`
     a b + v + ;  \ leave return value on stack
 ```

@@ -149,7 +149,7 @@ project/
    - Handle stack effects during compilation vs execution
 
 3. **Testing and refinement**
-   - Test with critical immediate words like `'s`, `[[`, `]]`
+   - Test with critical immediate words like `'s`, `{`, `}`
    - Ensure validation doesn't break immediate word behavior
 
 ## Implementation Notes

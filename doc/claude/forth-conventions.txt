@@ -19,7 +19,7 @@ This document captures Forth-specific patterns and gotchas to help Claude avoid 
 ## Object-Oriented Programming
 - Use `||` prefix for private/temporary definitions (not `--` or `__`)
 - `'s property` syntax for object property access  
-- `[[` object context takes address parameter: `obj [[ ... ]]`
+- `{` object context takes address parameter: `obj { ... } `
 - Property access pattern: `obj 's field-name @`
 
 ## Stack Comments

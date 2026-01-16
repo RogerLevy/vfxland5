@@ -13,7 +13,7 @@ The codebase currently uses the original nib.vfx OOP system with:
 
 ### 1. Engineer (engineer/)
 **Current state:**
-- Uses basic nib.vfx for object context (`me`, `[[`, `]]`)
+- Uses basic nib.vfx for object context (`me`, `{`, `}`)
 - No formal classes defined
 - Uses `var` for field definitions sparingly
 - array2.vfx already migrated to Nib 2.0 as proof of concept
@@ -105,7 +105,7 @@ actor% :: peeked ( - )
 
 ### Low Risk
 - Basic field access patterns remain similar
-- Object context system (`me`, `[[`, `]]`) unchanged
+- Object context system (`me`, `{`, `}`) unchanged
 - Performance can be maintained with careful field/property choices
 
 ### Medium Risk

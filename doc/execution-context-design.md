@@ -46,10 +46,10 @@ Originally provided two ways to switch contexts:
 
 ```forth
 c{ ( ec - )   \ Switch current object's ecp to new EC
-c}            \ Restore previous ecp
+c}           \ Restore previous ecp
 
-t{            \ Create temporary EC, switch to it
-t}            \ Restore and discard temp EC
+t{           \ Create temporary EC, switch to it
+t}           \ Restore and discard temp EC
 ```
 
 **Problem**: These change the current object's `ecp` field without pushing a new object onto the object stack.
@@ -63,7 +63,7 @@ ec-cell fnt
 123 fnt!              \ Store in rootec (global's default EC)
 
 econtext test-ec
-test-ec c{  -1 fnt!  c}   \ Store -1 in test-ec
+test-ec c{ -1 fnt!  c}  \ Store -1 in test-ec
 
 \ Later...
 test-ec c{
@@ -110,8 +110,8 @@ Have `t{` copy non-sentinel values to temp EC:
 
 Just use object scoping correctly:
 ```forth
-global {              \ Push global onto object stack
-    other-obj {       \ Push other-obj with different EC
+global {             \ Push global onto object stack
+    other-obj {      \ Push other-obj with different EC
         fnt@ .        \ Can inherit up the object stack
     }
 }

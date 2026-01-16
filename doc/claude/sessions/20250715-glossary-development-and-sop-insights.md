@@ -89,7 +89,7 @@ n[] ( n. array - a ) \ Get element address using normalized index
 **Why Multiple Instantiation Methods Exist**:
 - `>object` = memory management level
 - `one` = actor lifecycle level  
-- `*[[` = scripting convenience level
+- `*{ ` = scripting convenience level
 - Each serves different "topics/subjects"
 
 **Proposed VFXLand5/02 Evolution**:

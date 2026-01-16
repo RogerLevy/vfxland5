@@ -51,7 +51,7 @@ This is a custom system developed by the user specifically for their game develo
 - **Properties**: Dynamic field allocation via `prop`, always public
 - **Statics**: Class-level storage via `static`, always public  
 - **Fields**: Direct offset allocation via `field` (context-dependent scope, not for classes, only classic structs)
-- **Context**: `me` points to current object, scoped with `[[` ... `]]` and `as>`
+- **Context**: `me` points to current object, scoped with `{` ... `}` and `as>`
 - **Property access**: Use `-> propertyname` syntax for objects on stack, `propertyname` for scoped objects
 - **Inheritance**: `derive` copies class structure, `is-a` adds trait identity
 - **Composition**: `works-with` applies trait without identity inheritance

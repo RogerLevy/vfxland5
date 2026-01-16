@@ -3,7 +3,7 @@ VFXLand5 has its own dialect, deviating slightly from standard Forth
 ## Engineer redefinitions
 `not` - Boolean negation.  Equivalent to `0=`.
 `2+` `2-` - Add/subtract integer/fixed coordinates ( x y x y -- x y )
-`[[` `]]` - Object scoping.  Usage: `<object> [[ ... ]]`
+`{` `}` - Object scoping.  Usage: `<object> { ... } `
 `2@` `2!` - Fetch/store coordinates ( a -- x y ) ( x y a -- ) stored in memory in this order: [ x , y ].  Only for integers and fixed-point values.
 `$+` - Append string to counted string ( $ a n -- $ ) 
 

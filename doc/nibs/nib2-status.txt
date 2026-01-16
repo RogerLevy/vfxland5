@@ -15,7 +15,7 @@ Status Legend:
 
 1.1 Object Runtime Fundamentals [x] 
    [x] ME variable for current object context
-   [x] [[ and ]] object scoping with object stack
+   [x] { and } object scoping with object stack
    [x] -> field access syntax (immediate word, renamed from 'S)
    [x] Object stack management (osp, os, pagealign)
    [x] Object validation framework (magic numbers)

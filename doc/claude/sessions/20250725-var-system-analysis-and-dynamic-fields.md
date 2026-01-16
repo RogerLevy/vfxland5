@@ -9,7 +9,7 @@ Analysis of VFXland5's object-oriented system, exploring how `var` works, its tr
 - `var` creates instance fields using compile-time offset calculation via `/obj` counter
 - Fields return addresses within current object (`me` pointer) 
 - System supports `private-var` using file-scoped vocabularies for encapsulation
-- Access pattern: `object [[ field @ ]]` for reading, `object [[ value field ! ]]` for writing
+- Access pattern: `object { field @ } ` for reading, `object { value field ! } ` for writing
 
 ### Core Tradeoff: Compile-time Simplicity vs Runtime Flexibility
 **VFX Forth gains:**
