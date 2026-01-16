@@ -99,7 +99,7 @@ continuation: who> ( - actor|0 ) ( - f )
 %actor :: unload ( - )
     unloaded on ; 
 
-|| : sweep ( - )
+: sweep ( - )
     actives>  unloaded @ -exit  me recycle ;
 
 : step ( - )
