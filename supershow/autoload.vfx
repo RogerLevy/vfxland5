@@ -82,7 +82,7 @@ class: %tileset
 class;
 [then]
 
-[defined] %sample [if]
+[defined] waveplay>> [if]
 class: %sample
     %asset derive
     is-a %autoload

@@ -1,7 +1,7 @@
 \ ------------------------------------------------------------------------------
 \ Supershow
 \
-\ minimalist 2D game engine with actors, CRT effect, sample playback, 
+\ minimalist 2D game engine with actors, sprite animation, sample playback,
 \ and tilemaps.
 \ ------------------------------------------------------------------------------
 
@@ -43,6 +43,12 @@ MODULE %idir%/sprites.vfx          \ Sprite animation (MODULEs %tileset)
 MODULE %idir%/udlr.vfx             \ Movement utilities
 MODULE %idir%/tmcol.vfx            \ Tilemap collision detection
 MODULE %idir%/tread.vfx            \ Tilemap data reading
+
+\ =============================================================================
+\ Audio
+\ =============================================================================
+
+MODULE %idir%/waveplay.vfx
 
 \ =============================================================================
 \ Convenience facilities

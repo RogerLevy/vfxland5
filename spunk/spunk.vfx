@@ -24,7 +24,7 @@ variable room#
 : roombase$  room# @ s" map\room" find-dat-path f" %s%03n" >pad count ;
 : room-datfile  roombase$ f" %s.dat" ;
 : room-scnfile  roombase$ f" %s.vfx" ;
-: screen  1023 and /screen * mram + ;
+redef : screen  1023 and /screen * mram + ;
 
 \ =============================================================================
 \ Stashing actors between rooms
@@ -40,23 +40,24 @@ class;
 || : belong? ( - flag )
     r# @ room# @ =   r# @ -1 = or ;
 
-: unstashed ( %actor - actor' )
+: unstashed ( actor - actor' )
     as>
-        a# @ priority
-        *actor 
-        me over /actor move
+        \ a# @ priority
+        one
+        me over %actor sizeof move
         en off ;
 
-: unstash ( %actor - )
+: unstash ( actor - )
     unstashed drop ;
 
-: stashed ( %actor - actor' )
-    {
-        r# @ -1 <> if room# @ r# ! then
-        me actor# a# !   *temp    me over /actor move   me unload 
-    } ;
+: stashed ( actor - actor' )
+    ;
+    \ {
+    \     r# @ -1 <> if room# @ r# ! then
+    \     ( me actor# a# ! )  *temp    me over /actor move   me unload 
+    \ } ;
 
-: stash ( %actor - )
+: stash ( actor - )
     stashed drop ;
 
 : throwaway ( - )
@@ -84,7 +85,7 @@ class;
     _stow sweep ;
 
 : takeout ( - )
-    temps>   belong? -exit   me unstash ;
+    ; \ temps>   belong? -exit   me unstash ;
 
 : temp-instance ( class - %actor )
     make stashed ;
@@ -127,11 +128,12 @@ variable load-room-chain
     load-room-chain do-chain ;
 
 : load-world ( - )
-    clear-temps #rooms for i room revert stow loop ;
+    \ clear-temps 
+    #rooms for i room revert stow loop ;
 
 : clear-world ( - )
     mram /screen #rooms * erase 
-    clear-temps 
+    \ clear-temps 
     clear-stage ;
 
 \ =============================================================================
