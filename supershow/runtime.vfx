@@ -55,7 +55,7 @@ REQUIRE %idir%/sprites.vfx
     \ init-tilesets
     \ init-samples
     init-autoloads
-    init-crt
+    \ init-crt
     debug @ if
 \        ['] supershow-process-dirchange is process-dirchange
     else

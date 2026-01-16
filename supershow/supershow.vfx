@@ -17,7 +17,7 @@ MODULE %idir%/utilities.vfx        \ Math helpers, audio, and misc utilities
 MODULE %idir%/traits.vfx           \ Object traits
 MODULE %idir%/asset.vfx            \ Base asset class
 MODULE %idir%/shader.vfx           \ Shaders 
-MODULE %idir%/crt.vfx              \ CRT shader
+\ MODULE %idir%/crt.vfx              \ CRT shader  \ TODO: Shader doesn't compile on OpenGL 3.0?
 
 \ =============================================================================
 \ Actor system
