@@ -23,6 +23,8 @@
 \ Flag to control REPL game mode
 variable repl-game-active
 
+create gds 2 mb allot
+
 : repl-post ( - )
     frame-timer al_stop_timer 
     going off
@@ -38,21 +40,25 @@ variable repl-game-active
     display al_flip_display
     spin
     <esc> pressed? if >vfx then
-    ;
+;
 
 \ Single frame execution for REPL mode (no throw, catches errors)
+variable _err
+variable _rp
+fast{
 : repl-frame ( - )
-    sp@ >r
-    [: 
-        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \ protect VFX Forth from stack underflow
-        repl-mode-frame 
-    ;] catch ?dup if
+    0 sp@ >r rp@ _rp !
+    gds [ 2 mb 4096 - ] literal + sp!
+    ['] repl-mode-frame catch _err !
+    _rp @ rp! r> sp! drop
+    _err @
+    ?dup if
         \ Error occurred - stop the game and report
         repl-game-active off
         going @ if repl-post then
         cr ." Game error: " .throw cr
-    then 
-    r> sp! ;
+    then ;
+fast}
 
 \ BusyIdle hook that runs game frames
 : game-busyidle ( - )
