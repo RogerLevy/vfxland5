@@ -102,7 +102,7 @@ class: %sample
         \ oggs only for now
         bl parse 
         2dup file-exists? not abort" File not found"
-        2dup -path sfind nip if 2drop exit then
+        2dup -path -ext f" *%s*" sfind nip if 2drop exit then
         2dup -path -ext f" *%s*" %sample asset does-sample {
             2dup '.' ending -1 /string ident place 
             ( fp len ) embed
