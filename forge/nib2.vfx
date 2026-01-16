@@ -493,9 +493,10 @@ create %protocol  %class dmake {
     \ map property for current class
     {
         classifier has-field-space? if
-            classifier -> next-ofs @ cell +  \ TEMP: using cell instead of property-size @
-            classifier -> field-space-size @ >
-                abort" MAP-PROPERTY : Cannot map property - out of field space!"
+            dup classifier -> next-ofs @ +
+            classifier -> field-space-size @ > if
+                classifier body>name  f" MAP-PROPERTY : Cannot map property in %s - out of field space!" -1 -rot .abort
+            then
         then
 
         classifier -> next-ofs @ offset @ classifier + !
