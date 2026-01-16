@@ -463,7 +463,7 @@ create %protocol  %class dmake {
     r> body>name 
     r> >cla @ body>name
     2swap
-    f" Property %s not mapped for class %s" -1 -rot .abort ;
+    f" Property %s not found in class %s" -1 -rot .abort ;
 
 : does-property 
     does> me swap ->property ;
@@ -1268,7 +1268,7 @@ aka prop property
     } ;
 
 : o. ( object - )
-    dup .object cr .props ;
+    cr dup .object cr .props ;
 
 \ ==============================================================================
 \ %OBJECT Base Protocols
