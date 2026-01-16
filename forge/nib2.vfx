@@ -1285,19 +1285,18 @@ variable errsp   estack errsp !
 : >e ( ? - ) errsp @ !  4 errsp c+! ;
 : e> ( - ? ) -4 errsp c+!  errsp @ @ ;
 
-: save-ds ( - n )
-    depth dup >r 0 ?do i pick >e loop 
-    r> >e
-    0 ; 
+: save-ds ( - )
+    depth 0 ?do i pick >e loop 
+    depth >e ;
 
-: restore-ds ( n - )
-    drop 
-    ( throwcode ) >r s0 @ sp! e> 0 ?do e> loop r> ;
+: restore-ds ( throwcode - )
+    >r s0 @ sp! e> 0 ?do e> loop r> ;
 
-: save-osp  me >e  osp @ >e ;
-: restore-osp  e> osp !  e> to me ;
-: save-nibs  save-ds save-osp ;
-: restore-nibs  restore-osp restore-ds ;
+: save-osp      me >ep  osp @ >ep  ;
+: restore-osp   ep> osp !  ep> to me ;
+
+: save-nibs           ( save-ds    )  save-osp  2 ;
+: restore-nibs  drop  ( restore-ds )  restore-osp ;
 
 ['] save-nibs ['] restore-nibs extends-catch
 
