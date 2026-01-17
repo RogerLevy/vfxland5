@@ -75,6 +75,9 @@ variable next-bmp#  1 next-bmp# !
 : bmph ( bmpid - h )
     bmpwh nip ;
 
+: bmpxy ( bmp - x y ) 
+    id>albmp dup al_get_bitmap_x swap al_get_bitmap_y ;
+
 : put ( bmpid - ) 
     \ draw a sprite; takes a bitfield $F000IIII 
     ?dup -exit
