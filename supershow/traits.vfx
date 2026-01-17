@@ -46,3 +46,7 @@ trait: %xy
     prop x :fixed <save
     prop y :fixed <save
 trait;
+
+trait: %_bitmap 
+    prop bmp :int <save
+trait;

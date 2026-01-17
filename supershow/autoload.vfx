@@ -40,7 +40,7 @@ class: %bitmap
     is-a %autoload
 
     : does-bitmap ( - ) 
-        does> -> id @ ;
+        does> >bmp @ ;
 
     : _load-albmp ( - )
         me @data memfile@ dup
@@ -54,7 +54,7 @@ class: %bitmap
         2dup -path %bitmap asset does-bitmap { 
             ( fp len ) embed
             _load-albmp 
-            me add-bitmap id !
+            me add-bitmap bmp !
         } ;
 
     :: on-startup ( - )

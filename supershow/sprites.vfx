@@ -10,7 +10,7 @@ require %idir%/tileset.vfx
 \ =============================================================================
 
 class: %actor
-    prop bmp :int <save 
+    is-a %_bitmap
 class;
 
 %actor :: draw ( - )

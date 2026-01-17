@@ -8,7 +8,7 @@ require %idir%/asset.vfx
 class: %bitmap
     %asset derive
     is-a %saveable
-    prop id 
+    is-a %_bitmap
     prop albmp
     prop touched
 class;
@@ -26,7 +26,7 @@ variable next-bmp#  1 next-bmp# !
 : alloc-bmp# ( - bmpid ) next-bmp# @   1 next-bmp# +! ;
 : add-bitmap ( bitmap - bmpid ) 
     alloc-bmp# >r 
-    r@ over >id !
+    r@ over >bmp !
     r@ bitmap! r> ;
 
 : id>albmp ( bmpid - albmp ) 
@@ -89,20 +89,20 @@ variable next-bmp#  1 next-bmp# !
 
 %bitmap :: save
     touched @ -exit
-    id @ id>albmp 0= ?exit  \ Skip if no valid Allegro bitmap
-    id @ is-subbmp? if
+    bmp @ id>albmp 0= ?exit  \ Skip if no valid Allegro bitmap
+    bmp @ is-subbmp? if
         \ For sub-bitmaps, touch parent and exit
         touched off
-        id @ bmp>parent ?dup if
+        bmp @ bmp>parent ?dup if
             id>bmp >touched on
         then
         exit
     then
     \ Normal bitmap - save it
     touched off
-    id @ bitmap-file expand >zpad   id @ id>albmp al_save_bitmap
+    bmp @ bitmap-file expand >zpad   bmp @ id>albmp al_save_bitmap
         0= abort" Error saving bitmap"
-    id @ bitmap-file f" Saved bitmap to %s" type cr ;
+    bmp @ bitmap-file f" Saved bitmap to %s" type cr ;
 
 : save-bitmaps
     \ Do 2 passes - allows touched sub-bitmaps to touch
