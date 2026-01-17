@@ -179,7 +179,7 @@ create cb-p /screen allot
             the-key <x> = ctrl? and if cut then
             the-key <c> = ctrl? and if copy then
             the-key <v> = ctrl? and if paste then
-            the-key <z> = ctrl? and if revert then
+            the-key <z> = ctrl? and if revert-room then
         then
         ALLEGRO_EVENT_KEY_CHAR happened? if
             the-key <left> = if -1 shift? if 10 * then +room then
@@ -197,7 +197,7 @@ create cb-p /screen allot
     revert-bg load-ag ;
 
 : revert-all
-    room# @ #rooms for i room revert loop room ;
+    room# @ #rooms for i room revert-room loop room ;
 
 : (le)
     le:  show>  logic  ui  1 life +! ;

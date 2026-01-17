@@ -121,7 +121,7 @@ variable load-room-chain
 : revert-bg ( - )
     room-datfile playfield load-room ;
 
-: revert ( - )
+: revert-room ( - )
     revert-bg
     clear-stage
     room-scnfile ?included
@@ -129,7 +129,7 @@ variable load-room-chain
 
 : load-world ( - )
     \ clear-temps 
-    #rooms for i room revert stow loop ;
+    #rooms for i room revert-room stow loop ;
 
 : clear-world ( - )
     mram /screen #rooms * erase 
