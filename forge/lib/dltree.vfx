@@ -48,6 +48,7 @@ trait;
 
 : dlpush  ( dltree parent -- )
     2dup = abort" DLPUSH : Attempt to add dltree to itself." 
+    2dup >highest @ = if 2drop exit then  \ dltree is already highest element of parent
     over dlremove
     1 over >item-count +! 
     dup -> lowest @ 0= if  (dlinit)  exit  then
@@ -134,12 +135,11 @@ public
 
 : descendant? ( dltree1 dltree2 - flag )  
     \ Check if dltree1 is a child of dltree2
-    swap {
-        begin parent @ dup while
-            over = if   } drop -1   exit then
-            parent @ to me
-        repeat nip ( 0 )
-    } ;
+    swap as>
+    begin parent @ dup while
+        over = if   drop -1   exit then
+        parent @ to me
+    repeat nip ( 0 ) ;
 fast}
 
 %dltree :: el@ ( i - val ) _nth-child ;
