@@ -25,7 +25,6 @@ MODULE %idir%/shader.vfx           \ Shaders
 
 MODULE %idir%/actor.vfx
 MODULE %idir%/stage.vfx            \ Actor/sprite system
-MODULE %idir%/timer.vfx
 
 \ =============================================================================
 \ Bitmaps and tilemaps
@@ -35,6 +34,8 @@ MODULE %idir%/bitmap.vfx           \ Bitmaps
 MODULE %idir%/tileset.vfx          \ Tilesets
 MODULE %idir%/tilemap2.vfx         \ Tilemap rendering & Tileset class
 MODULE %idir%/sprites.vfx          \ Sprite animation (MODULEs %tileset)
+
+MODULE %idir%/timer.vfx
 
 \ =============================================================================
 \ Tilemap collision
