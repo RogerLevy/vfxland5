@@ -179,11 +179,25 @@ fast}
 
 aka #children #items
 
+: find-ancestor ( xt dltree - dltree|0 ) ( ... dltree - ... flag ) 
+    >parent @ begin
+        dup 0= if nip exit then
+        2dup 2>r swap execute if 2r> nip exit then 2r> 
+        >parent @
+    again ;
+
+: find-descendant ( xt dltree - dltree|0 ) ( ... dltree - ... flag ) 
+    >lowest @ begin
+        dup 0= if nip exit then
+        2dup 2>r  swap execute if 2r> nip exit then 
+        2r@ recurse ?dup if 2r> 2drop exit then 
+        2r> >next @
+    again ;
+
 || variable indent
 %dltree :: .items ( array - )
-    item-count @ for 
-        
-        cr indent @ spaces i me el? 
+    item-count @ for
+        cr indent @ spaces i me el?
         4 indent +!
         i me el@ .items
         -4 indent +!
