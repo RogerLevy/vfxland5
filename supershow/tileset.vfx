@@ -58,6 +58,9 @@ class;
 : is-tile? ( n - f )
     id>albmp dup -exit al_is_sub_bitmap ;
 
+: xy>tile ( x y tileset - n )
+    { tw 2@ 2/ bmp @ bmpw tw @ / * + } ;
+
 
 \ =============================================================================
 \ Tile metadata
