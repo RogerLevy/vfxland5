@@ -160,6 +160,7 @@ include %idir%/../textmode/textmode-tools.vfx
    repeat  r> 2drop ;
 
 : slashes ( a len - a len )  
+    dup -exit
     2dup  over + swap do  i c@ '/' = if
     '\' i c!  then  #1 +loop ; 
 
