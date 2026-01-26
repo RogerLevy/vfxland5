@@ -61,6 +61,11 @@ class;
 : xy>tile ( x y tileset - n )
     { tw 2@ 2/ bmp @ bmpw tw @ / * + } ;
 
+: bmp>ts$ ( bmpid - name len )
+    bitmap-file -path -ext f" %s.ts" ;
+
+: bmp>ts ( bmpid - tileset ) 
+    bmp>ts$ evaluate ;
 
 \ =============================================================================
 \ Tile metadata
