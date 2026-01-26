@@ -97,9 +97,13 @@ borrow nib2>> prop+
             >zpad "script" cjson add-string
         else 2drop then
 
-        me forth@ dup if
-            >zpad "forth" cjson add-string
-        else 2drop then
+        me ['] forth@ catch ?dup 0= if 
+            dup if
+                >zpad "forth" cjson add-string
+            else 2drop then
+        else
+            .throw drop
+        then
 
         \ Call on-serialize hook for custom serialization
         cjson me on-serialize 
